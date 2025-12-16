@@ -1,6 +1,6 @@
 "use client";
+
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { format, isValid, parseISO } from "date-fns";
 import {
   Search,
   Filter,
@@ -573,16 +573,25 @@ function frequencyBadge(freq) {
 function dateFromISO(iso) {
   const s = (iso ?? "").toString().trim();
   if (!s) return undefined;
-  try {
-    const d = parseISO(s);
-    return isValid(d) ? d : undefined;
-  } catch {
-    return undefined;
-  }
+  // Native parse for YYYY-MM-DD. Treat as local date to avoid timezone surprises.
+  const m = /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.exec(s);
+  if (!m) return undefined;
+  const y = Number(m[1]);
+  const mo = Number(m[2]);
+  const d = Number(m[3]);
+  if (!Number.isFinite(y) || !Number.isFinite(mo) || !Number.isFinite(d)) return undefined;
+  const dt = new Date(y, mo - 1, d);
+  // Validate roundtrip to catch invalid dates like 2025-02-30
+  if (dt.getFullYear() !== y || dt.getMonth() !== mo - 1 || dt.getDate() !== d) return undefined;
+  return dt;
 }
 
-function isoFromDate(d) {
-  return format(d, "yyyy-MM-dd");
+function isoFromDate(dt) {
+  if (!(dt instanceof Date) || Number.isNaN(dt.getTime())) return "";
+  const y = dt.getFullYear();
+  const m = String(dt.getMonth() + 1).padStart(2, "0");
+  const d = String(dt.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
 }
 
 function DatePickerField({ label, value, onChange }) {
@@ -606,7 +615,7 @@ function DatePickerField({ label, value, onChange }) {
 
       <div className="flex items-center justify-between">
         <div className="text-xs text-muted-foreground">
-          {selected ? `Selected: ${format(selected, "PPP")}` : "No date selected"}
+          {selected ? `Selected: ${isoFromDate(selected)}` : "No date selected"}
         </div>
         <Button type="button" variant="ghost" className="h-8 rounded-xl" onClick={() => onChange("")}>
           Clear
@@ -666,6 +675,12 @@ function runDateSelfTests() {
 
   const bad = dateFromISO("not-a-date");
   console.assert(bad === undefined, "dateFromISO should return undefined for invalid input");
+
+  const invalidDay = dateFromISO("2025-02-30");
+  console.assert(invalidDay === undefined, "dateFromISO should reject invalid calendar dates");
+
+  const empty = dateFromISO("");
+  console.assert(empty === undefined, "dateFromISO should treat empty as undefined");
 }
 
 // ---------------------------------------------
