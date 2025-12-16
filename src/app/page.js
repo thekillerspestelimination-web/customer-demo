@@ -1372,17 +1372,26 @@ function DataTable({ rows, onOpen }) {
 // ---------------------------------------------
 
 export default function CustomerDatabaseUI() {
-  const [customers, setCustomers] = useState(() => {
+  const [customers, setCustomers] = useState(seedCustomers);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    // Avoid server/client hydration mismatches by loading localStorage only after mount.
     try {
-      const raw = localStorage.getItem("customer_db_v1");
-      if (!raw) return seedCustomers;
-      const parsed = JSON.parse(raw);
-      if (!Array.isArray(parsed) || parsed.length === 0) return seedCustomers;
-      return parsed;
+      const raw = typeof window !== "undefined" ? window.localStorage.getItem("customer_db_v1") : null;
+      if (!raw) {
+        setCustomers(seedCustomers);
+      } else {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) setCustomers(parsed);
+        else setCustomers(seedCustomers);
+      }
     } catch {
-      return seedCustomers;
+      setCustomers(seedCustomers);
+    } finally {
+      setHydrated(true);
     }
-  });
+  }, []);
 
   const [query, setQuery] = useState("");
   const [view, setView] = useState("grid");
@@ -1412,12 +1421,13 @@ export default function CustomerDatabaseUI() {
   }, []);
 
   useEffect(() => {
+    if (!hydrated) return;
     try {
-      localStorage.setItem("customer_db_v1", JSON.stringify(customers));
+      window.localStorage.setItem("customer_db_v1", JSON.stringify(customers));
     } catch {
       // ignore storage errors
     }
-  }, [customers]);
+  }, [customers, hydrated]);
 
   const uniqueCities = useMemo(() => {
     const s = new Set(customers.map((c) => c.city).filter(Boolean));
@@ -1608,6 +1618,19 @@ export default function CustomerDatabaseUI() {
     setOpenImport(false);
     setImportPending([]);
   };
+
+  if (!hydrated) {
+    return (
+      <div className="min-h-screen w-full bg-gradient-to-b from-background to-muted/40">
+        <div className="mx-auto max-w-7xl px-4 py-16">
+          <div className="rounded-2xl border bg-background p-6 shadow-sm">
+            <div className="text-sm text-muted-foreground">Loading customer database…</div>
+            <div className="mt-2 text-lg font-semibold">Preparing your demo</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-background to-muted/40">
