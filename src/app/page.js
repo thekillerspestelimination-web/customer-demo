@@ -1,14 +1,10 @@
-"use client";
-
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { format, isValid, parseISO } from "date-fns";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Search,
   Filter,
   LayoutGrid,
   List,
   Download,
-  FileUp,
   Plus,
   Pencil,
   X,
@@ -284,8 +280,6 @@ const seedCustomers = [
   },
 ];
 
-const DAYS_OF_WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-
 // ---------------------------------------------
 // Utilities
 // ---------------------------------------------
@@ -329,8 +323,7 @@ function toCSV(rows) {
 
   const esc = (v) => {
     const s = (v ?? "").toString();
-    // Quote if contains comma, quote, CR, or LF
-    if (/[\n\r,\"]/g.test(s)) return `"${s.replace(/"/g, '""')}"`;
+    if (/[\n\r,\"]/g.test(s)) return `"${s.replace(/\"/g, '"').replace(/"/g, '""')}"`;
     return s;
   };
 
@@ -358,180 +351,10 @@ function toCSV(rows) {
         r.notes,
         r.lastService,
         r.nextService,
-      ]
-        .map(esc)
-        .join(",")
+      ].map(esc).join(",")
     );
   }
   return lines.join("\n");
-}
-
-// CSV parser that supports quoted fields and commas/newlines inside quotes.
-function parseCSVText(text) {
-  const rows = [];
-  let row = [];
-  let field = "";
-  let inQuotes = false;
-
-  const pushField = () => {
-    row.push(field);
-    field = "";
-  };
-
-  const pushRow = () => {
-    // Skip trailing empty line
-    if (row.length === 1 && (row[0] ?? "") === "" && rows.length > 0) {
-      row = [];
-      return;
-    }
-    rows.push(row);
-    row = [];
-  };
-
-  for (let i = 0; i < text.length; i++) {
-    const ch = text[i];
-
-    if (inQuotes) {
-      if (ch === '"') {
-        const next = text[i + 1];
-        if (next === '"') {
-          field += '"';
-          i++;
-        } else {
-          inQuotes = false;
-        }
-      } else {
-        field += ch;
-      }
-      continue;
-    }
-
-    if (ch === '"') {
-      inQuotes = true;
-      continue;
-    }
-
-    if (ch === ",") {
-      pushField();
-      continue;
-    }
-
-    if (ch === "\n") {
-      pushField();
-      pushRow();
-      continue;
-    }
-
-    if (ch === "\r") continue;
-
-    field += ch;
-  }
-
-  pushField();
-  pushRow();
-
-  if (rows.length === 0) return { headers: [], data: [] };
-
-  const headers = (rows[0] || []).map((h) => (h ?? "").toString().trim());
-  const data = rows
-    .slice(1)
-    .filter((r) => r.some((c) => (c ?? "").toString().trim() !== ""));
-
-  return { headers, data };
-}
-
-function headerKey(h) {
-  const s = normalize(h);
-  let out = "";
-  for (let i = 0; i < s.length; i++) {
-    const ch = s[i];
-    const ok =
-      (ch >= "a" && ch <= "z") ||
-      (ch >= "0" && ch <= "9") ||
-      ch === " " ||
-      ch === "#" ||
-      ch === "/";
-    if (ok) out += ch;
-  }
-  return out.split(" ").filter(Boolean).join(" ");
-}
-
-function getCell(headers, row, aliases) {
-  for (let i = 0; i < headers.length; i++) {
-    const hk = headerKey(headers[i]);
-    if (aliases.includes(hk)) return (row[i] ?? "").toString().trim();
-  }
-  return "";
-}
-
-function parseYesNo(v) {
-  const s = normalize(v);
-  if (!s) return false;
-  return s === "yes" || s === "y" || s === "true" || s === "1";
-}
-
-function mapCSVRowToCustomer(headers, row, fallbackAccount) {
-  const accountRaw = getCell(headers, row, [
-    "account #",
-    "account",
-    "acct",
-    "acct #",
-    "account number",
-  ]);
-  const account = safeNum(accountRaw, fallbackAccount);
-
-  const client = getCell(headers, row, ["client", "customer", "name", "client name"]);
-  const address = getCell(headers, row, ["address", "street", "street address"]);
-  const city = getCell(headers, row, ["city"]);
-  const state = getCell(headers, row, ["state", "st"]);
-  const zip = getCell(headers, row, ["zip", "zip code", "zipcode", "postal", "postal code"]);
-  const phone = getCell(headers, row, ["phone", "phone number", "telephone"]);
-  const email1 = getCell(headers, row, ["email", "email 1", "email #1"]);
-  const email2 = getCell(headers, row, ["email #2", "email 2", "secondary email"]);
-  const calls = getCell(headers, row, [
-    "client calls for scheduling",
-    "calls for scheduling",
-    "calls to schedule",
-  ]);
-  const frequency = getCell(headers, row, ["frequency"]);
-  const serviceType = getCell(headers, row, ["service type", "service"]);
-  const rate = getCell(headers, row, ["rate", "price"]);
-  const hrs = getCell(headers, row, [
-    "average duration (hrs)",
-    "avg duration (hrs)",
-    "avg duration",
-    "hours",
-    "hrs",
-  ]);
-  const preferredGardener = getCell(headers, row, ["preferred gardener", "gardener"]);
-  const preferredDay = getCell(headers, row, ["preferred day", "day"]);
-  const preferredTime = getCell(headers, row, ["preferred time", "time"]);
-  const notes = getCell(headers, row, ["notes", "note"]);
-  const lastService = getCell(headers, row, ["last service", "last"]);
-  const nextService = getCell(headers, row, ["next service", "next"]);
-
-  return {
-    account,
-    client,
-    address,
-    city,
-    state,
-    zip,
-    phone,
-    email1,
-    email2,
-    callsForScheduling: parseYesNo(calls),
-    frequency,
-    serviceType,
-    rate: safeNum(rate, 0),
-    avgDurationHrs: safeNum(hrs, 0),
-    preferredGardener,
-    preferredDay,
-    preferredTime,
-    notes,
-    lastService,
-    nextService,
-  };
 }
 
 function downloadText(filename, content, mime = "text/plain;charset=utf-8") {
@@ -565,108 +388,9 @@ function frequencyBadge(freq) {
   const f = normalize(freq);
   if (f.includes("monthly")) return { label: "Monthly", variant: "default" };
   if (f.includes("as needed")) return { label: "As Needed", variant: "secondary" };
-  if (f.includes("2x")) return { label: freq || "2x/Year", variant: "outline" };
-  if (f.includes("1x") || f.includes("annual") || f.includes("year"))
-    return { label: freq || "Annual", variant: "outline" };
+  if (f.includes("2x") || f.includes("2")) return { label: freq || "2x/Year", variant: "outline" };
+  if (f.includes("1x") || f.includes("annual") || f.includes("year")) return { label: freq || "Annual", variant: "outline" };
   return { label: freq || "—", variant: "secondary" };
-}
-
-function dateFromISO(iso) {
-  const s = (iso ?? "").toString().trim();
-  if (!s) return undefined;
-  try {
-    const d = parseISO(s);
-    return isValid(d) ? d : undefined;
-  } catch {
-    return undefined;
-  }
-}
-
-function isoFromDate(d) {
-  return format(d, "yyyy-MM-dd");
-}
-
-function DatePickerField({ label, value, onChange }) {
-  // Robust fallback: use native date input (always available) rather than depending on a Calendar component.
-  // Stores value as YYYY-MM-DD.
-  const selected = dateFromISO(value);
-
-  return (
-    <div className="space-y-2">
-      {label ? <Label>{label}</Label> : null}
-
-      <div className="relative">
-        <Calendar className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          type="date"
-          className="rounded-xl pl-9"
-          value={value || ""}
-          onChange={(e) => onChange(e.target.value)}
-        />
-      </div>
-
-      <div className="flex items-center justify-between">
-        <div className="text-xs text-muted-foreground">
-          {selected ? `Selected: ${format(selected, "PPP")}` : "No date selected"}
-        </div>
-        <Button type="button" variant="ghost" className="h-8 rounded-xl" onClick={() => onChange("")}>
-          Clear
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-// ---------------------------------------------
-// Self-tests (run once in dev)
-// ---------------------------------------------
-
-function runCsvSelfTests() {
-  // 1) Escaping in CSV output
-  const csv = toCSV([
-    {
-      account: 99,
-      client: 'A, "B"',
-      address: "Line1\nLine2",
-      city: "Portland",
-      state: "OR",
-      zip: "97200",
-      phone: "",
-      email1: "",
-      email2: "",
-      callsForScheduling: false,
-      frequency: "Monthly",
-      serviceType: "",
-      rate: 1,
-      avgDurationHrs: 2,
-      preferredGardener: "",
-      preferredDay: "",
-      preferredTime: "",
-      notes: "",
-      lastService: "",
-      nextService: "",
-    },
-  ]);
-  console.assert(csv.includes('"A, ""B"""'), "CSV should escape quotes and commas");
-  console.assert(csv.includes('"Line1\nLine2"'), "CSV should quote newline fields");
-
-  // 2) Parsing quoted commas/newlines
-  const sample =
-    "Account #,Client,Address\n" + "1,Normal,Simple\n" + '2,"Comma, Name","Multi\nLine"\n';
-  const parsed = parseCSVText(sample);
-  console.assert(parsed.headers.length === 3, "Should parse headers");
-  console.assert(parsed.data.length === 2, "Should parse 2 data rows");
-  console.assert(parsed.data[1][1] === "Comma, Name", "Should preserve commas inside quotes");
-  console.assert(parsed.data[1][2] === "Multi\nLine", "Should preserve newlines inside quotes");
-}
-
-function runDateSelfTests() {
-  const d = dateFromISO("2025-12-15");
-  console.assert(!!d, "dateFromISO should parse YYYY-MM-DD");
-  if (d) console.assert(isoFromDate(d) === "2025-12-15", "isoFromDate should roundtrip");
-
-  const bad = dateFromISO("not-a-date");
-  console.assert(bad === undefined, "dateFromISO should return undefined for invalid input");
 }
 
 // ---------------------------------------------
@@ -786,11 +510,7 @@ function CustomerCard({ customer, onOpen }) {
 
           <div className="flex flex-wrap items-center gap-2">
             {customer.callsForScheduling ? <Badge variant="secondary">Calls to Schedule</Badge> : null}
-            {customer.serviceType ? (
-              <Badge variant="outline">{customer.serviceType}</Badge>
-            ) : (
-              <Badge variant="outline">Service TBD</Badge>
-            )}
+            {customer.serviceType ? <Badge variant="outline">{customer.serviceType}</Badge> : <Badge variant="outline">Service TBD</Badge>}
           </div>
 
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
@@ -855,11 +575,7 @@ function CustomerDialog({ open, onOpenChange, customer, onSave, onDelete }) {
 
           <TabsContent value="overview" className="mt-4 space-y-4">
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              <Row
-                icon={MapPin}
-                label="Address"
-                value={`${draft.address}${draft.city ? `, ${draft.city}` : ""}${draft.state ? `, ${draft.state}` : ""}${draft.zip ? ` ${draft.zip}` : ""}`}
-              />
+              <Row icon={MapPin} label="Address" value={`${draft.address}${draft.city ? `, ${draft.city}` : ""}${draft.state ? `, ${draft.state}` : ""}${draft.zip ? ` ${draft.zip}` : ""}`} />
               <Row icon={Phone} label="Phone" value={draft.phone} />
               <Row icon={Mail} label="Email" value={draft.email1} />
               <Row icon={Mail} label="Email #2" value={draft.email2} />
@@ -882,29 +598,7 @@ function CustomerDialog({ open, onOpenChange, customer, onSave, onDelete }) {
 
           <TabsContent value="schedule" className="mt-4 space-y-4">
             <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-              <div className="rounded-xl border p-3">
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <Calendar className="h-3.5 w-3.5" /> Preferred Day
-                </div>
-                <div className="mt-2">
-                  <Select
-                    value={draft.preferredDay ? draft.preferredDay : "__none__"}
-                    onValueChange={(v) => set("preferredDay", v === "__none__" ? "" : v)}
-                  >
-                    <SelectTrigger className="rounded-xl">
-                      <SelectValue placeholder="Select a day" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="__none__">None</SelectItem>
-                      {DAYS_OF_WEEK.map((d) => (
-                        <SelectItem key={d} value={d}>
-                          {d}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
+              <Row icon={Calendar} label="Preferred Day" value={draft.preferredDay} />
               <Row icon={Clock} label="Preferred Time" value={draft.preferredTime} />
               <Row icon={Phone} label="Client Calls For Scheduling" value={draft.callsForScheduling ? "Yes" : "No"} />
             </div>
@@ -912,8 +606,8 @@ function CustomerDialog({ open, onOpenChange, customer, onSave, onDelete }) {
             <Separator />
 
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              <DatePickerField label="Last Service" value={draft.lastService} onChange={(v) => set("lastService", v)} />
-              <DatePickerField label="Next Service" value={draft.nextService} onChange={(v) => set("nextService", v)} />
+              <Row icon={Calendar} label="Last Service" value={draft.lastService} />
+              <Row icon={Calendar} label="Next Service" value={draft.nextService} />
             </div>
 
             <div className="rounded-2xl border p-4">
@@ -944,10 +638,7 @@ function CustomerDialog({ open, onOpenChange, customer, onSave, onDelete }) {
                   variant="secondary"
                   onClick={() => {
                     const q = `${draft.address}, ${draft.city}, ${draft.state} ${draft.zip}`.trim();
-                    window.open(
-                      `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`,
-                      "_blank"
-                    );
+                    window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`, "_blank");
                   }}
                 >
                   <MapPin className="mr-2 h-4 w-4" /> Open in Maps
@@ -967,7 +658,10 @@ function CustomerDialog({ open, onOpenChange, customer, onSave, onDelete }) {
               </div>
               <div className="space-y-2">
                 <Label>Account #</Label>
-                <Input value={draft.account} onChange={(e) => set("account", Number(e.target.value) || draft.account)} />
+                <Input
+                  value={draft.account}
+                  onChange={(e) => set("account", Number(e.target.value) || draft.account)}
+                />
               </div>
 
               <div className="space-y-2">
@@ -1019,11 +713,7 @@ function CustomerDialog({ open, onOpenChange, customer, onSave, onDelete }) {
 
               <div className="space-y-2">
                 <Label>Service Type</Label>
-                <Input
-                  value={draft.serviceType}
-                  onChange={(e) => set("serviceType", e.target.value)}
-                  placeholder="e.g., Winter Pruning"
-                />
+                <Input value={draft.serviceType} onChange={(e) => set("serviceType", e.target.value)} placeholder="e.g., Winter Pruning" />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
@@ -1045,19 +735,7 @@ function CustomerDialog({ open, onOpenChange, customer, onSave, onDelete }) {
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-2">
                   <Label>Preferred Day</Label>
-                  <Select value={draft.preferredDay ? draft.preferredDay : "__none__"} onValueChange={(v) => set("preferredDay", v === "__none__" ? "" : v)}>
-                    <SelectTrigger className="rounded-xl">
-                      <SelectValue placeholder="Select a day" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="__none__">None</SelectItem>
-                      {DAYS_OF_WEEK.map((d) => (
-                        <SelectItem key={d} value={d}>
-                          {d}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Input value={draft.preferredDay} onChange={(e) => set("preferredDay", e.target.value)} placeholder="e.g., Tuesday" />
                 </div>
                 <div className="space-y-2">
                   <Label>Preferred Time</Label>
@@ -1070,7 +748,10 @@ function CustomerDialog({ open, onOpenChange, customer, onSave, onDelete }) {
                   <div className="text-sm font-semibold">Client calls for scheduling</div>
                   <div className="text-xs text-muted-foreground">If enabled, client expects to initiate scheduling.</div>
                 </div>
-                <Switch checked={!!draft.callsForScheduling} onCheckedChange={(v) => set("callsForScheduling", !!v)} />
+                <Switch
+                  checked={!!draft.callsForScheduling}
+                  onCheckedChange={(v) => set("callsForScheduling", !!v)}
+                />
               </div>
 
               <div className="space-y-2 md:col-span-2">
@@ -1079,8 +760,14 @@ function CustomerDialog({ open, onOpenChange, customer, onSave, onDelete }) {
               </div>
 
               <div className="grid grid-cols-2 gap-3 md:col-span-2">
-                <DatePickerField label="Last Service" value={draft.lastService} onChange={(v) => set("lastService", v)} />
-                <DatePickerField label="Next Service" value={draft.nextService} onChange={(v) => set("nextService", v)} />
+                <div className="space-y-2">
+                  <Label>Last Service</Label>
+                  <Input value={draft.lastService} onChange={(e) => set("lastService", e.target.value)} placeholder="YYYY-MM-DD" />
+                </div>
+                <div className="space-y-2">
+                  <Label>Next Service</Label>
+                  <Input value={draft.nextService} onChange={(e) => set("nextService", e.target.value)} placeholder="YYYY-MM-DD" />
+                </div>
               </div>
             </div>
           </TabsContent>
@@ -1088,15 +775,26 @@ function CustomerDialog({ open, onOpenChange, customer, onSave, onDelete }) {
 
         <DialogFooter className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-between">
           <div className="flex gap-2">
-            <Button variant="destructive" onClick={() => onDelete?.(draft)} className="rounded-xl">
+            <Button
+              variant="destructive"
+              onClick={() => onDelete?.(draft)}
+              className="rounded-xl"
+            >
               <X className="mr-2 h-4 w-4" /> Delete
             </Button>
           </div>
           <div className="flex gap-2">
-            <Button variant="secondary" onClick={() => onOpenChange(false)} className="rounded-xl">
+            <Button
+              variant="secondary"
+              onClick={() => onOpenChange(false)}
+              className="rounded-xl"
+            >
               Cancel
             </Button>
-            <Button onClick={() => onSave?.(draft)} className="rounded-xl">
+            <Button
+              onClick={() => onSave?.(draft)}
+              className="rounded-xl"
+            >
               Save changes
             </Button>
           </div>
@@ -1229,7 +927,9 @@ function CreateDialog({ open, onOpenChange, nextAccount, onCreate }) {
         </div>
 
         <DialogFooter>
-          <Button variant="secondary" onClick={() => onOpenChange(false)} className="rounded-xl">Cancel</Button>
+          <Button variant="secondary" onClick={() => onOpenChange(false)} className="rounded-xl">
+            Cancel
+          </Button>
           <Button
             onClick={() => {
               if (!draft.client.trim()) return;
@@ -1246,68 +946,6 @@ function CreateDialog({ open, onOpenChange, nextAccount, onCreate }) {
   );
 }
 
-function ImportDialog({ open, onOpenChange, summary, onConfirm }) {
-  if (!summary) return null;
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl rounded-2xl">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <FileUp className="h-5 w-5" /> Import CSV
-          </DialogTitle>
-          <DialogDescription>Review what will be added before applying changes.</DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-            <div className="rounded-2xl border p-4">
-              <div className="text-xs text-muted-foreground">Rows detected</div>
-              <div className="mt-1 text-2xl font-semibold tabular-nums">{summary.totalRows}</div>
-            </div>
-            <div className="rounded-2xl border p-4">
-              <div className="text-xs text-muted-foreground">Will add</div>
-              <div className="mt-1 text-2xl font-semibold tabular-nums">{summary.toAdd}</div>
-            </div>
-            <div className="rounded-2xl border p-4">
-              <div className="text-xs text-muted-foreground">Skipped</div>
-              <div className="mt-1 text-2xl font-semibold tabular-nums">{summary.skipped}</div>
-            </div>
-          </div>
-
-          {summary.warnings?.length ? (
-            <div className="rounded-2xl border p-4">
-              <div className="text-sm font-semibold">Warnings</div>
-              <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
-                {summary.warnings.slice(0, 6).map((w, idx) => (
-                  <li key={idx}>{w}</li>
-                ))}
-                {summary.warnings.length > 6 ? <li>…and {summary.warnings.length - 6} more</li> : null}
-              </ul>
-            </div>
-          ) : null}
-
-          <div className="rounded-2xl border p-4">
-            <div className="text-sm font-semibold">Import rules</div>
-            <div className="mt-1 text-sm text-muted-foreground">
-              This import adds new clients and skips rows whose Account # already exists in your database. Export a CSV from this app for the cleanest column mapping.
-            </div>
-          </div>
-        </div>
-
-        <DialogFooter>
-          <Button variant="secondary" className="rounded-xl" onClick={() => onOpenChange(false)}>
-            Cancel
-          </Button>
-          <Button className="rounded-xl" onClick={onConfirm} disabled={summary.toAdd === 0}>
-            Import
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
 function DataTable({ rows, onOpen }) {
   return (
     <div className="overflow-hidden rounded-2xl border">
@@ -1315,7 +953,18 @@ function DataTable({ rows, onOpen }) {
         <table className="min-w-[1100px] w-full text-sm">
           <thead className="sticky top-0 z-10 bg-background">
             <tr className="border-b">
-              {["Acct", "Client", "City", "Zip", "Frequency", "Service", "Rate", "Hrs", "Calls?", "Email"].map((h) => (
+              {[
+                "Acct",
+                "Client",
+                "City",
+                "Zip",
+                "Frequency",
+                "Service",
+                "Rate",
+                "Hrs",
+                "Calls?",
+                "Email",
+              ].map((h) => (
                 <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">
                   {h}
                 </th>
@@ -1371,14 +1020,10 @@ export default function CustomerDatabaseUI() {
   });
 
   const [query, setQuery] = useState("");
-  const [view, setView] = useState("grid");
+  const [view, setView] = useState("grid"); // grid | table
   const [selected, setSelected] = useState(null);
   const [openDetail, setOpenDetail] = useState(false);
   const [openCreate, setOpenCreate] = useState(false);
-  const [openImport, setOpenImport] = useState(false);
-  const [importSummary, setImportSummary] = useState(null);
-  const [importPending, setImportPending] = useState([]);
-  const fileInputRef = useRef(null);
 
   // Filters
   const [cityFilter, setCityFilter] = useState("all");
@@ -1386,16 +1031,6 @@ export default function CustomerDatabaseUI() {
   const [freqFilter, setFreqFilter] = useState("all");
   const [callsOnly, setCallsOnly] = useState(false);
   const [hideNoEmail, setHideNoEmail] = useState(false);
-
-  useEffect(() => {
-    try {
-      runCsvSelfTests();
-      runDateSelfTests();
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.warn("Self-tests failed:", e);
-    }
-  }, []);
 
   useEffect(() => {
     try {
@@ -1430,7 +1065,7 @@ export default function CustomerDatabaseUI() {
           const f = normalize(c.frequency);
           if (freqFilter === "monthly" && !f.includes("monthly")) return false;
           if (freqFilter === "annual" && !(f.includes("year") || f.includes("1x"))) return false;
-          if (freqFilter === "2x" && !f.includes("2x")) return false;
+          if (freqFilter === "2x" && !(f.includes("2x") || f.includes("2"))) return false;
           if (freqFilter === "asneeded" && !f.includes("as needed")) return false;
         }
         if (callsOnly && !c.callsForScheduling) return false;
@@ -1468,8 +1103,14 @@ export default function CustomerDatabaseUI() {
     const total = customers.length;
     const monthly = customers.filter((c) => normalize(c.frequency).includes("monthly")).length;
     const calls = customers.filter((c) => c.callsForScheduling).length;
-    const avgRate = total === 0 ? 0 : customers.reduce((sum, c) => sum + safeNum(c.rate), 0) / total;
-    const avgHrs = total === 0 ? 0 : customers.reduce((sum, c) => sum + safeNum(c.avgDurationHrs), 0) / total;
+    const avgRate =
+      total === 0
+        ? 0
+        : customers.reduce((sum, c) => sum + safeNum(c.rate), 0) / total;
+    const avgHrs =
+      total === 0
+        ? 0
+        : customers.reduce((sum, c) => sum + safeNum(c.avgDurationHrs), 0) / total;
 
     const { byCity, byZip } = statBuckets(customers);
     return { total, monthly, calls, avgRate, avgHrs, byCity, byZip };
@@ -1511,102 +1152,8 @@ export default function CustomerDatabaseUI() {
     }
   };
 
-  const startCSVImport = () => {
-    setImportSummary(null);
-    setImportPending([]);
-    setOpenImport(false);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-      fileInputRef.current.click();
-    }
-  };
-
-  const handleCSVFile = async (file) => {
-    const warnings = [];
-    try {
-      const text = await file.text();
-      const { headers, data } = parseCSVText(text);
-
-      if (!headers.length) {
-        setImportSummary({ totalRows: 0, toAdd: 0, skipped: 0, warnings: ["No headers found in CSV."] });
-        setImportPending([]);
-        setOpenImport(true);
-        return;
-      }
-
-      const existingAccounts = new Set(customers.map((c) => safeNum(c.account)));
-      let next = Math.max(0, ...customers.map((c) => safeNum(c.account))) + 1;
-
-      const pending = [];
-      let skipped = 0;
-
-      for (let idx = 0; idx < data.length; idx++) {
-        const row = data[idx];
-        const hasAccountInCSV =
-          normalize(getCell(headers, row, ["account #", "account", "acct", "acct #", "account number"])).length > 0;
-
-        const draft = mapCSVRowToCustomer(headers, row, next);
-
-        const hasName = normalize(draft.client).length > 0;
-        if (!hasName) {
-          skipped++;
-          warnings.push(`Row ${idx + 2}: missing Client name (skipped).`);
-          continue;
-        }
-
-        if (existingAccounts.has(safeNum(draft.account))) {
-          skipped++;
-          continue;
-        }
-
-        if (!hasAccountInCSV) next += 1;
-        existingAccounts.add(safeNum(draft.account));
-
-        pending.push({
-          ...draft,
-          city: draft.city || "Portland",
-          state: draft.state || "OR",
-          frequency: draft.frequency || "Monthly",
-        });
-      }
-
-      setImportPending(pending);
-      setImportSummary({ totalRows: data.length, toAdd: pending.length, skipped, warnings });
-      setOpenImport(true);
-    } catch (e) {
-      setImportSummary({
-        totalRows: 0,
-        toAdd: 0,
-        skipped: 0,
-        warnings: ["Unable to read or parse CSV.", String(e?.message || e)],
-      });
-      setImportPending([]);
-      setOpenImport(true);
-    }
-  };
-
-  const confirmCSVImport = () => {
-    if (!importPending.length) return;
-    setCustomers((prev) => {
-      const merged = [...prev, ...importPending];
-      return merged.sort((a, b) => safeNum(a.account) - safeNum(b.account));
-    });
-    setOpenImport(false);
-    setImportPending([]);
-  };
-
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-background to-muted/40">
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept=".csv,text/csv"
-        className="hidden"
-        onChange={(e) => {
-          const f = e.target.files?.[0];
-          if (f) handleCSVFile(f);
-        }}
-      />
       <div className="mx-auto max-w-7xl px-4 py-8">
         {/* Header */}
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -1622,20 +1169,10 @@ export default function CustomerDatabaseUI() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <Button variant="secondary" className="rounded-xl" onClick={() => startCSVImport()}>
-              <FileUp className="mr-2 h-4 w-4" /> Import CSV
-            </Button>
-
             <Button
               variant="secondary"
               className="rounded-xl"
-              onClick={() =>
-                downloadText(
-                  `customers_${new Date().toISOString().slice(0, 10)}.csv`,
-                  toCSV(customers),
-                  "text/csv;charset=utf-8"
-                )
-              }
+              onClick={() => downloadText(`customers_${new Date().toISOString().slice(0, 10)}.csv`, toCSV(customers), "text/csv;charset=utf-8")}
             >
               <Download className="mr-2 h-4 w-4" /> Export CSV
             </Button>
@@ -1649,18 +1186,13 @@ export default function CustomerDatabaseUI() {
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>Data</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => resetToSeed()}>Reset to seed data</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => startCSVImport()}>
-                  <FileUp className="mr-2 h-4 w-4" /> Import CSV
+                <DropdownMenuItem onClick={() => resetToSeed()}>
+                  Reset to seed data
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => {
                     const csv = toCSV(customers);
-                    downloadText(
-                      `customers_backup_${new Date().toISOString().slice(0, 10)}.csv`,
-                      csv,
-                      "text/csv;charset=utf-8"
-                    );
+                    downloadText(`customers_backup_${new Date().toISOString().slice(0, 10)}.csv`, csv, "text/csv;charset=utf-8");
                   }}
                 >
                   Export backup CSV
@@ -1753,13 +1285,21 @@ export default function CustomerDatabaseUI() {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2">
-                  <Checkbox checked={callsOnly} onCheckedChange={(v) => setCallsOnly(!!v)} id="callsOnly" />
+                  <Checkbox
+                    checked={callsOnly}
+                    onCheckedChange={(v) => setCallsOnly(!!v)}
+                    id="callsOnly"
+                  />
                   <Label htmlFor="callsOnly" className="text-sm">
                     Calls to schedule
                   </Label>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Checkbox checked={hideNoEmail} onCheckedChange={(v) => setHideNoEmail(!!v)} id="hideNoEmail" />
+                  <Checkbox
+                    checked={hideNoEmail}
+                    onCheckedChange={(v) => setHideNoEmail(!!v)}
+                    id="hideNoEmail"
+                  />
                   <Label htmlFor="hideNoEmail" className="text-sm">
                     Hide no-email
                   </Label>
@@ -1795,18 +1335,14 @@ export default function CustomerDatabaseUI() {
                 title="No matching customers"
                 subtitle="Try clearing filters or searching by zip, name, or email."
                 action={
-                  <Button
-                    variant="secondary"
-                    className="rounded-xl"
-                    onClick={() => {
-                      setQuery("");
-                      setCityFilter("all");
-                      setZipFilter("all");
-                      setFreqFilter("all");
-                      setCallsOnly(false);
-                      setHideNoEmail(false);
-                    }}
-                  >
+                  <Button variant="secondary" className="rounded-xl" onClick={() => {
+                    setQuery("");
+                    setCityFilter("all");
+                    setZipFilter("all");
+                    setFreqFilter("all");
+                    setCallsOnly(false);
+                    setHideNoEmail(false);
+                  }}>
                     Clear filters
                   </Button>
                 }
@@ -1841,7 +1377,7 @@ export default function CustomerDatabaseUI() {
                 <div className="flex flex-wrap gap-2">
                   <Badge variant="secondary">Local storage</Badge>
                   <Badge variant="outline">CSV export</Badge>
-                  <Badge variant="outline">CSV import</Badge>
+                  <Badge variant="outline">Detail + edit modal</Badge>
                 </div>
               </CardContent>
             </Card>
@@ -1858,10 +1394,12 @@ export default function CustomerDatabaseUI() {
         />
 
         {/* Create Dialog */}
-        <CreateDialog open={openCreate} onOpenChange={setOpenCreate} nextAccount={nextAccount} onCreate={createCustomer} />
-
-        {/* Import Dialog */}
-        <ImportDialog open={openImport} onOpenChange={setOpenImport} summary={importSummary} onConfirm={confirmCSVImport} />
+        <CreateDialog
+          open={openCreate}
+          onOpenChange={setOpenCreate}
+          nextAccount={nextAccount}
+          onCreate={createCustomer}
+        />
 
         {/* Footer */}
         <div className="mt-10 text-xs text-muted-foreground">
@@ -1871,3 +1409,4 @@ export default function CustomerDatabaseUI() {
     </div>
   );
 }
+
