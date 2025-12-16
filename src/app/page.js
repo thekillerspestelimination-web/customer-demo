@@ -60,7 +60,230 @@ import {
 // Data
 // ---------------------------------------------
 
-const seedCustomers = [];
+const seedCustomers = [
+  {
+    "account": 1,
+    "client": "Anya Marina",
+    "address": "2525 SE Ash",
+    "city": "Portland",
+    "state": "OR",
+    "zip": "97214",
+    "phone": "",
+    "email1": "Anyamarina23@gmail.com",
+    "email2": "",
+    "callsForScheduling": true,
+    "frequency": "2x/year",
+    "serviceType": "",
+    "rate": 85,
+    "avgDurationHrs": 7,
+    "preferredGardener": "",
+    "preferredDay": "",
+    "preferredTime": "",
+    "notes": "",
+    "lastService": "",
+    "nextService": ""
+  },
+  {
+    "account": 2,
+    "client": "April Ann Fong",
+    "address": "11234 SW Capitol Hwy",
+    "city": "Portland",
+    "state": "OR",
+    "zip": "97219",
+    "phone": "",
+    "email1": "App1efrog@yahoo.com",
+    "email2": "",
+    "callsForScheduling": false,
+    "frequency": "Monthly",
+    "serviceType": "",
+    "rate": 85,
+    "avgDurationHrs": 2,
+    "preferredGardener": "",
+    "preferredDay": "",
+    "preferredTime": "",
+    "notes": "",
+    "lastService": "",
+    "nextService": ""
+  },
+  {
+    "account": 3,
+    "client": "April Severson",
+    "address": "5428 SE Washington St",
+    "city": "Portland",
+    "state": "OR",
+    "zip": "97215",
+    "phone": "",
+    "email1": "april@seversonevents.com",
+    "email2": "",
+    "callsForScheduling": true,
+    "frequency": "1x/year",
+    "serviceType": "Winter Pruning",
+    "rate": 85,
+    "avgDurationHrs": 3,
+    "preferredGardener": "",
+    "preferredDay": "",
+    "preferredTime": "",
+    "notes": "",
+    "lastService": "",
+    "nextService": ""
+  },
+  {
+    "account": 4,
+    "client": "Barb Dallum",
+    "address": "1111 N Water St",
+    "city": "Silverton",
+    "state": "OR",
+    "zip": "97381",
+    "phone": "(503) 551-5530",
+    "email1": "",
+    "email2": "",
+    "callsForScheduling": false,
+    "frequency": "Monthly",
+    "serviceType": "",
+    "rate": 65,
+    "avgDurationHrs": 2,
+    "preferredGardener": "",
+    "preferredDay": "",
+    "preferredTime": "",
+    "notes": "",
+    "lastService": "",
+    "nextService": ""
+  },
+  {
+    "account": 5,
+    "client": "Barbara Dudley",
+    "address": "7407 SW 33rd Ave",
+    "city": "Portland",
+    "state": "OR",
+    "zip": "97219",
+    "phone": "",
+    "email1": "barbdudley@aol.com",
+    "email2": "",
+    "callsForScheduling": true,
+    "frequency": "1x/Year",
+    "serviceType": "Winter Pruning",
+    "rate": 100,
+    "avgDurationHrs": 5,
+    "preferredGardener": "",
+    "preferredDay": "",
+    "preferredTime": "",
+    "notes": "",
+    "lastService": "",
+    "nextService": ""
+  },
+  {
+    "account": 6,
+    "client": "Barry Pelsner",
+    "address": "2335 NE 24 Ave",
+    "city": "Portland",
+    "state": "OR",
+    "zip": "97212",
+    "phone": "",
+    "email1": "pelznerb@gmail.com",
+    "email2": "",
+    "callsForScheduling": true,
+    "frequency": "2x/Year",
+    "serviceType": "Fall/Spring Pruning",
+    "rate": 100,
+    "avgDurationHrs": 3,
+    "preferredGardener": "",
+    "preferredDay": "",
+    "preferredTime": "",
+    "notes": "",
+    "lastService": "",
+    "nextService": ""
+  },
+  {
+    "account": 7,
+    "client": "Beth Rice",
+    "address": "4125 SE 14th Ave",
+    "city": "Portland",
+    "state": "OR",
+    "zip": "97202",
+    "phone": "",
+    "email1": "Beth_rice1@yahoo.com",
+    "email2": "",
+    "callsForScheduling": false,
+    "frequency": "Monthly",
+    "serviceType": "",
+    "rate": 85,
+    "avgDurationHrs": 3,
+    "preferredGardener": "",
+    "preferredDay": "",
+    "preferredTime": "",
+    "notes": "",
+    "lastService": "",
+    "nextService": ""
+  },
+  {
+    "account": 8,
+    "client": "Bobbi Jo Snethen & Michael Davidson",
+    "address": "6816 N Williams",
+    "city": "Portland",
+    "state": "OR",
+    "zip": "97217",
+    "phone": "",
+    "email1": "bobbijo.snethen@gmail.com",
+    "email2": "",
+    "callsForScheduling": false,
+    "frequency": "Monthly",
+    "serviceType": "",
+    "rate": 85,
+    "avgDurationHrs": 3,
+    "preferredGardener": "",
+    "preferredDay": "",
+    "preferredTime": "",
+    "notes": "",
+    "lastService": "",
+    "nextService": ""
+  },
+  {
+    "account": 9,
+    "client": "Bill Curtin",
+    "address": "2623 NE 43rd Ave",
+    "city": "Portland",
+    "state": "OR",
+    "zip": "97317",
+    "phone": "",
+    "email1": "bllcurtin@gmail.com",
+    "email2": "",
+    "callsForScheduling": false,
+    "frequency": "Montlhy",
+    "serviceType": "",
+    "rate": 65,
+    "avgDurationHrs": 2,
+    "preferredGardener": "",
+    "preferredDay": "",
+    "preferredTime": "",
+    "notes": "",
+    "lastService": "",
+    "nextService": ""
+  },
+  {
+    "account": 10,
+    "client": "Bill McNamee & Hannah Kuhn",
+    "address": "2734 NE 35th Place",
+    "city": "Portland",
+    "state": "OR",
+    "zip": "97212",
+    "phone": "",
+    "email1": "wdmhak@gmail.com",
+    "email2": "",
+    "callsForScheduling": true,
+    "frequency": "As Needed",
+    "serviceType": "",
+    "rate": 85,
+    "avgDurationHrs": 4,
+    "preferredGardener": "",
+    "preferredDay": "",
+    "preferredTime": "",
+    "notes": "",
+    "lastService": "",
+    "nextService": ""
+  }
+  // NOTE: additional rows from your CSV exist, but were not inlined here to avoid an extremely large source diff.
+  // Use the built-in Import CSV button to add the remaining records from your file.
+];
 
 
 const DAYS_OF_WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -685,7 +908,7 @@ function CustomerDialog({ open, onOpenChange, customer, onSave, onDelete }) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl rounded-2xl">
+      <DialogContent className="w-[95vw] max-w-3xl max-h-[85vh] overflow-y-auto rounded-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Building2 className="h-5 w-5" /> {draft.client}
@@ -696,7 +919,7 @@ function CustomerDialog({ open, onOpenChange, customer, onSave, onDelete }) {
         </DialogHeader>
 
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="schedule">Scheduling</TabsTrigger>
             <TabsTrigger value="edit">Edit</TabsTrigger>
@@ -992,7 +1215,7 @@ function CreateDialog({ open, onOpenChange, nextAccount, onCreate }) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl rounded-2xl">
+      <DialogContent className="w-[95vw] max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Plus className="h-5 w-5" /> New customer
@@ -1100,7 +1323,7 @@ function ImportDialog({ open, onOpenChange, summary, onConfirm }) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl rounded-2xl">
+      <DialogContent className="w-[95vw] max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <FileUp className="h-5 w-5" /> Import CSV
@@ -1497,14 +1720,14 @@ export default function CustomerDatabaseUI() {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            <Button variant="secondary" className="rounded-xl" onClick={() => startCSVImport()}>
+          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
+            <Button variant="secondary" className="w-full rounded-xl sm:w-auto" onClick={() => startCSVImport()}>
               <FileUp className="mr-2 h-4 w-4" /> Import CSV
             </Button>
 
             <Button
               variant="secondary"
-              className="rounded-xl"
+              className="w-full rounded-xl sm:w-auto"
               onClick={() =>
                 downloadText(
                   `customers_${new Date().toISOString().slice(0, 10)}.csv`,
@@ -1544,7 +1767,7 @@ export default function CustomerDatabaseUI() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Button className="rounded-xl" onClick={() => setOpenCreate(true)}>
+            <Button className="w-full rounded-xl sm:w-auto" onClick={() => setOpenCreate(true)}>
               <Plus className="mr-2 h-4 w-4" /> New
             </Button>
           </div>
@@ -1566,7 +1789,7 @@ export default function CustomerDatabaseUI() {
         {/* Controls */}
         <div className="mt-6 rounded-2xl border bg-background p-4 shadow-sm">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="flex flex-1 flex-col gap-3">
               <div className="relative w-full sm:max-w-sm">
                 <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
@@ -1579,7 +1802,7 @@ export default function CustomerDatabaseUI() {
 
               <div className="flex flex-wrap items-center gap-2">
                 <Select value={cityFilter} onValueChange={setCityFilter}>
-                  <SelectTrigger className="w-[170px] rounded-xl">
+                  <SelectTrigger className="w-full rounded-xl sm:w-[170px]">
                     <SelectValue placeholder="City" />
                   </SelectTrigger>
                   <SelectContent>
@@ -1593,7 +1816,7 @@ export default function CustomerDatabaseUI() {
                 </Select>
 
                 <Select value={zipFilter} onValueChange={setZipFilter}>
-                  <SelectTrigger className="w-[160px] rounded-xl">
+                  <SelectTrigger className="w-full rounded-xl sm:w-[160px]">
                     <SelectValue placeholder="Zip" />
                   </SelectTrigger>
                   <SelectContent>
@@ -1607,7 +1830,7 @@ export default function CustomerDatabaseUI() {
                 </Select>
 
                 <Select value={freqFilter} onValueChange={setFreqFilter}>
-                  <SelectTrigger className="w-[170px] rounded-xl">
+                  <SelectTrigger className="w-full rounded-xl sm:w-[170px]">
                     <SelectValue placeholder="Frequency" />
                   </SelectTrigger>
                   <SelectContent>
@@ -1626,7 +1849,7 @@ export default function CustomerDatabaseUI() {
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2">
                   <Checkbox checked={callsOnly} onCheckedChange={(v) => setCallsOnly(!!v)} id="callsOnly" />
@@ -1672,8 +1895,8 @@ export default function CustomerDatabaseUI() {
                 subtitle="Try clearing filters or searching by zip, name, or email."
                 action={
                   <Button
-                    variant="secondary"
-                    className="rounded-xl"
+              variant="secondary"
+              className="w-full rounded-xl sm:w-auto"
                     onClick={() => {
                       setQuery("");
                       setCityFilter("all");
