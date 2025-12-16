@@ -542,8 +542,11 @@ function mapCSVRowToCustomer(headers, row, fallbackAccount) {
   const rate = getCell(headers, row, ["rate", "price"]);
   const hrs = getCell(headers, row, [
     "average duration (hrs)",
+    "average duration hrs",
     "avg duration (hrs)",
+    "avg duration hrs",
     "avg duration",
+    "average duration",
     "hours",
     "hrs",
   ]);
@@ -675,6 +678,15 @@ function DatePickerField({ label, value, onChange }) {
 // ---------------------------------------------
 
 function runCsvSelfTests() {
+  // 0) Header normalization should still map parentheses headers
+  const csv0 = "Account #,Client,Average Duration (hrs)
+1,Test,2
+";
+  const p0 = parseCSVText(csv0);
+  const c0 = mapCSVRowToCustomer(p0.headers, p0.data[0], 1);
+  console.assert(c0.avgDurationHrs === 2, "Should map Average Duration (hrs) to avgDurationHrs");
+
+
   // 1) Escaping in CSV output
   const csv = toCSV([
     {
