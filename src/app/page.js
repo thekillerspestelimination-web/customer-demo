@@ -1,6 +1,5 @@
-"use client";
-
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { format, isValid, parseISO } from "date-fns";
 import {
   Search,
   Filter,
@@ -62,229 +61,226 @@ import {
 
 const seedCustomers = [
   {
-    "account": 1,
-    "client": "Anya Marina",
-    "address": "2525 SE Ash",
-    "city": "Portland",
-    "state": "OR",
-    "zip": "97214",
-    "phone": "",
-    "email1": "Anyamarina23@gmail.com",
-    "email2": "",
-    "callsForScheduling": true,
-    "frequency": "2x/year",
-    "serviceType": "",
-    "rate": 85,
-    "avgDurationHrs": 7,
-    "preferredGardener": "",
-    "preferredDay": "",
-    "preferredTime": "",
-    "notes": "",
-    "lastService": "",
-    "nextService": ""
+    account: 1,
+    client: "Anya Marina",
+    address: "2525 SE Ash",
+    city: "Portland",
+    state: "OR",
+    zip: "97214",
+    phone: "",
+    email1: "Anyamarina23@gmail.com",
+    email2: "",
+    callsForScheduling: true,
+    frequency: "2x/year",
+    serviceType: "",
+    rate: 85,
+    avgDurationHrs: 7,
+    preferredGardener: "",
+    preferredDay: "",
+    preferredTime: "",
+    notes: "",
+    lastService: "",
+    nextService: "",
   },
   {
-    "account": 2,
-    "client": "April Ann Fong",
-    "address": "11234 SW Capitol Hwy",
-    "city": "Portland",
-    "state": "OR",
-    "zip": "97219",
-    "phone": "",
-    "email1": "App1efrog@yahoo.com",
-    "email2": "",
-    "callsForScheduling": false,
-    "frequency": "Monthly",
-    "serviceType": "",
-    "rate": 85,
-    "avgDurationHrs": 2,
-    "preferredGardener": "",
-    "preferredDay": "",
-    "preferredTime": "",
-    "notes": "",
-    "lastService": "",
-    "nextService": ""
+    account: 2,
+    client: "April Ann Fong",
+    address: "11234 SW Capitol Hwy",
+    city: "Portland",
+    state: "OR",
+    zip: "97219",
+    phone: "",
+    email1: "App1efrog@yahoo.com",
+    email2: "",
+    callsForScheduling: false,
+    frequency: "Monthly",
+    serviceType: "",
+    rate: 85,
+    avgDurationHrs: 2,
+    preferredGardener: "",
+    preferredDay: "",
+    preferredTime: "",
+    notes: "",
+    lastService: "",
+    nextService: "",
   },
   {
-    "account": 3,
-    "client": "April Severson",
-    "address": "5428 SE Washington St",
-    "city": "Portland",
-    "state": "OR",
-    "zip": "97215",
-    "phone": "",
-    "email1": "april@seversonevents.com",
-    "email2": "",
-    "callsForScheduling": true,
-    "frequency": "1x/year",
-    "serviceType": "Winter Pruning",
-    "rate": 85,
-    "avgDurationHrs": 3,
-    "preferredGardener": "",
-    "preferredDay": "",
-    "preferredTime": "",
-    "notes": "",
-    "lastService": "",
-    "nextService": ""
+    account: 3,
+    client: "April Severson",
+    address: "5428 SE Washington St",
+    city: "Portland",
+    state: "OR",
+    zip: "97215",
+    phone: "",
+    email1: "april@seversonevents.com",
+    email2: "",
+    callsForScheduling: true,
+    frequency: "1x/year",
+    serviceType: "Winter Pruning",
+    rate: 85,
+    avgDurationHrs: 3,
+    preferredGardener: "",
+    preferredDay: "",
+    preferredTime: "",
+    notes: "",
+    lastService: "",
+    nextService: "",
   },
   {
-    "account": 4,
-    "client": "Barb Dallum",
-    "address": "1111 N Water St",
-    "city": "Silverton",
-    "state": "OR",
-    "zip": "97381",
-    "phone": "(503) 551-5530",
-    "email1": "",
-    "email2": "",
-    "callsForScheduling": false,
-    "frequency": "Monthly",
-    "serviceType": "",
-    "rate": 65,
-    "avgDurationHrs": 2,
-    "preferredGardener": "",
-    "preferredDay": "",
-    "preferredTime": "",
-    "notes": "",
-    "lastService": "",
-    "nextService": ""
+    account: 4,
+    client: "Barb Dallum",
+    address: "1111 N Water St",
+    city: "Silverton",
+    state: "OR",
+    zip: "97381",
+    phone: "(503) 551-5530",
+    email1: "",
+    email2: "",
+    callsForScheduling: false,
+    frequency: "Monthly",
+    serviceType: "",
+    rate: 65,
+    avgDurationHrs: 2,
+    preferredGardener: "",
+    preferredDay: "",
+    preferredTime: "",
+    notes: "",
+    lastService: "",
+    nextService: "",
   },
   {
-    "account": 5,
-    "client": "Barbara Dudley",
-    "address": "7407 SW 33rd Ave",
-    "city": "Portland",
-    "state": "OR",
-    "zip": "97219",
-    "phone": "",
-    "email1": "barbdudley@aol.com",
-    "email2": "",
-    "callsForScheduling": true,
-    "frequency": "1x/Year",
-    "serviceType": "Winter Pruning",
-    "rate": 100,
-    "avgDurationHrs": 5,
-    "preferredGardener": "",
-    "preferredDay": "",
-    "preferredTime": "",
-    "notes": "",
-    "lastService": "",
-    "nextService": ""
+    account: 5,
+    client: "Barbara Dudley",
+    address: "7407 SW 33rd Ave",
+    city: "Portland",
+    state: "OR",
+    zip: "97219",
+    phone: "",
+    email1: "barbdudley@aol.com",
+    email2: "",
+    callsForScheduling: true,
+    frequency: "1x/Year",
+    serviceType: "Winter Pruning",
+    rate: 100,
+    avgDurationHrs: 5,
+    preferredGardener: "",
+    preferredDay: "",
+    preferredTime: "",
+    notes: "",
+    lastService: "",
+    nextService: "",
   },
   {
-    "account": 6,
-    "client": "Barry Pelsner",
-    "address": "2335 NE 24 Ave",
-    "city": "Portland",
-    "state": "OR",
-    "zip": "97212",
-    "phone": "",
-    "email1": "pelznerb@gmail.com",
-    "email2": "",
-    "callsForScheduling": true,
-    "frequency": "2x/Year",
-    "serviceType": "Fall/Spring Pruning",
-    "rate": 100,
-    "avgDurationHrs": 3,
-    "preferredGardener": "",
-    "preferredDay": "",
-    "preferredTime": "",
-    "notes": "",
-    "lastService": "",
-    "nextService": ""
+    account: 6,
+    client: "Barry Pelsner",
+    address: "2335 NE 24 Ave",
+    city: "Portland",
+    state: "OR",
+    zip: "97212",
+    phone: "",
+    email1: "pelznerb@gmail.com",
+    email2: "",
+    callsForScheduling: true,
+    frequency: "2x/Year",
+    serviceType: "Fall/Spring Pruning",
+    rate: 100,
+    avgDurationHrs: 3,
+    preferredGardener: "",
+    preferredDay: "",
+    preferredTime: "",
+    notes: "",
+    lastService: "",
+    nextService: "",
   },
   {
-    "account": 7,
-    "client": "Beth Rice",
-    "address": "4125 SE 14th Ave",
-    "city": "Portland",
-    "state": "OR",
-    "zip": "97202",
-    "phone": "",
-    "email1": "Beth_rice1@yahoo.com",
-    "email2": "",
-    "callsForScheduling": false,
-    "frequency": "Monthly",
-    "serviceType": "",
-    "rate": 85,
-    "avgDurationHrs": 3,
-    "preferredGardener": "",
-    "preferredDay": "",
-    "preferredTime": "",
-    "notes": "",
-    "lastService": "",
-    "nextService": ""
+    account: 7,
+    client: "Beth Rice",
+    address: "4125 SE 14th Ave",
+    city: "Portland",
+    state: "OR",
+    zip: "97202",
+    phone: "",
+    email1: "Beth_rice1@yahoo.com",
+    email2: "",
+    callsForScheduling: false,
+    frequency: "Monthly",
+    serviceType: "",
+    rate: 85,
+    avgDurationHrs: 3,
+    preferredGardener: "",
+    preferredDay: "",
+    preferredTime: "",
+    notes: "",
+    lastService: "",
+    nextService: "",
   },
   {
-    "account": 8,
-    "client": "Bobbi Jo Snethen & Michael Davidson",
-    "address": "6816 N Williams",
-    "city": "Portland",
-    "state": "OR",
-    "zip": "97217",
-    "phone": "",
-    "email1": "bobbijo.snethen@gmail.com",
-    "email2": "",
-    "callsForScheduling": false,
-    "frequency": "Monthly",
-    "serviceType": "",
-    "rate": 85,
-    "avgDurationHrs": 3,
-    "preferredGardener": "",
-    "preferredDay": "",
-    "preferredTime": "",
-    "notes": "",
-    "lastService": "",
-    "nextService": ""
+    account: 8,
+    client: "Bobbi Jo Snethen & Michael Davidson",
+    address: "6816 N Williams",
+    city: "Portland",
+    state: "OR",
+    zip: "97217",
+    phone: "",
+    email1: "bobbijo.snethen@gmail.com",
+    email2: "",
+    callsForScheduling: false,
+    frequency: "Monthly",
+    serviceType: "",
+    rate: 85,
+    avgDurationHrs: 3,
+    preferredGardener: "",
+    preferredDay: "",
+    preferredTime: "",
+    notes: "",
+    lastService: "",
+    nextService: "",
   },
   {
-    "account": 9,
-    "client": "Bill Curtin",
-    "address": "2623 NE 43rd Ave",
-    "city": "Portland",
-    "state": "OR",
-    "zip": "97317",
-    "phone": "",
-    "email1": "bllcurtin@gmail.com",
-    "email2": "",
-    "callsForScheduling": false,
-    "frequency": "Montlhy",
-    "serviceType": "",
-    "rate": 65,
-    "avgDurationHrs": 2,
-    "preferredGardener": "",
-    "preferredDay": "",
-    "preferredTime": "",
-    "notes": "",
-    "lastService": "",
-    "nextService": ""
+    account: 9,
+    client: "Bill Curtin",
+    address: "2623 NE 43rd Ave",
+    city: "Portland",
+    state: "OR",
+    zip: "97317",
+    phone: "",
+    email1: "bllcurtin@gmail.com",
+    email2: "",
+    callsForScheduling: false,
+    frequency: "Montlhy",
+    serviceType: "",
+    rate: 65,
+    avgDurationHrs: 2,
+    preferredGardener: "",
+    preferredDay: "",
+    preferredTime: "",
+    notes: "",
+    lastService: "",
+    nextService: "",
   },
   {
-    "account": 10,
-    "client": "Bill McNamee & Hannah Kuhn",
-    "address": "2734 NE 35th Place",
-    "city": "Portland",
-    "state": "OR",
-    "zip": "97212",
-    "phone": "",
-    "email1": "wdmhak@gmail.com",
-    "email2": "",
-    "callsForScheduling": true,
-    "frequency": "As Needed",
-    "serviceType": "",
-    "rate": 85,
-    "avgDurationHrs": 4,
-    "preferredGardener": "",
-    "preferredDay": "",
-    "preferredTime": "",
-    "notes": "",
-    "lastService": "",
-    "nextService": ""
-  }
-  // NOTE: additional rows from your CSV exist, but were not inlined here to avoid an extremely large source diff.
-  // Use the built-in Import CSV button to add the remaining records from your file.
+    account: 10,
+    client: "Bill McNamee & Hannah Kuhn",
+    address: "2734 NE 35th Place",
+    city: "Portland",
+    state: "OR",
+    zip: "97212",
+    phone: "",
+    email1: "wdmhak@gmail.com",
+    email2: "",
+    callsForScheduling: true,
+    frequency: "As Needed",
+    serviceType: "",
+    rate: 85,
+    avgDurationHrs: 4,
+    preferredGardener: "",
+    preferredDay: "",
+    preferredTime: "",
+    notes: "",
+    lastService: "",
+    nextService: "",
+  },
 ];
-
 
 const DAYS_OF_WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -298,48 +294,6 @@ function cx(...classes) {
 
 function normalize(s) {
   return (s ?? "").toString().trim().toLowerCase();
-}
-
-function toDisplayString(v) {
-  if (v === null || v === undefined) return "";
-  if (typeof v === "string") return v;
-  if (typeof v === "number" || typeof v === "boolean") return String(v);
-  if (Array.isArray(v)) return v.map((x) => toDisplayString(x)).filter(Boolean).join(", ");
-  if (typeof v === "object") {
-    try {
-      return JSON.stringify(v);
-    } catch {
-      return "";
-    }
-  }
-  return "";
-}
-
-function migrateCustomer(raw, fallbackAccount) {
-  const c = raw && typeof raw === "object" ? raw : {};
-  // Preserve known fields, but coerce anything potentially non-string to string to avoid React child errors.
-  return {
-    account: safeNum(c.account, fallbackAccount),
-    client: toDisplayString(c.client),
-    address: toDisplayString(c.address),
-    city: toDisplayString(c.city),
-    state: toDisplayString(c.state),
-    zip: toDisplayString(c.zip),
-    phone: toDisplayString(c.phone),
-    email1: toDisplayString(c.email1),
-    email2: toDisplayString(c.email2),
-    callsForScheduling: !!c.callsForScheduling,
-    frequency: toDisplayString(c.frequency) || "Monthly",
-    serviceType: toDisplayString(c.serviceType),
-    rate: safeNum(c.rate, 0),
-    avgDurationHrs: safeNum(c.avgDurationHrs, 0),
-    preferredGardener: toDisplayString(c.preferredGardener),
-    preferredDay: toDisplayString(c.preferredDay),
-    preferredTime: toDisplayString(c.preferredTime),
-    notes: toDisplayString(c.notes),
-    lastService: toDisplayString(c.lastService),
-    nextService: toDisplayString(c.nextService),
-  };
 }
 
 function safeNum(n, fallback = 0) {
@@ -542,11 +496,8 @@ function mapCSVRowToCustomer(headers, row, fallbackAccount) {
   const rate = getCell(headers, row, ["rate", "price"]);
   const hrs = getCell(headers, row, [
     "average duration (hrs)",
-    "average duration hrs",
     "avg duration (hrs)",
-    "avg duration hrs",
     "avg duration",
-    "average duration",
     "hours",
     "hrs",
   ]);
@@ -621,25 +572,16 @@ function frequencyBadge(freq) {
 function dateFromISO(iso) {
   const s = (iso ?? "").toString().trim();
   if (!s) return undefined;
-  // Native parse for YYYY-MM-DD. Treat as local date to avoid timezone surprises.
-  const m = /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.exec(s);
-  if (!m) return undefined;
-  const y = Number(m[1]);
-  const mo = Number(m[2]);
-  const d = Number(m[3]);
-  if (!Number.isFinite(y) || !Number.isFinite(mo) || !Number.isFinite(d)) return undefined;
-  const dt = new Date(y, mo - 1, d);
-  // Validate roundtrip to catch invalid dates like 2025-02-30
-  if (dt.getFullYear() !== y || dt.getMonth() !== mo - 1 || dt.getDate() !== d) return undefined;
-  return dt;
+  try {
+    const d = parseISO(s);
+    return isValid(d) ? d : undefined;
+  } catch {
+    return undefined;
+  }
 }
 
-function isoFromDate(dt) {
-  if (!(dt instanceof Date) || Number.isNaN(dt.getTime())) return "";
-  const y = dt.getFullYear();
-  const m = String(dt.getMonth() + 1).padStart(2, "0");
-  const d = String(dt.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
+function isoFromDate(d) {
+  return format(d, "yyyy-MM-dd");
 }
 
 function DatePickerField({ label, value, onChange }) {
@@ -663,7 +605,7 @@ function DatePickerField({ label, value, onChange }) {
 
       <div className="flex items-center justify-between">
         <div className="text-xs text-muted-foreground">
-          {selected ? `Selected: ${isoFromDate(selected)}` : "No date selected"}
+          {selected ? `Selected: ${format(selected, "PPP")}` : "No date selected"}
         </div>
         <Button type="button" variant="ghost" className="h-8 rounded-xl" onClick={() => onChange("")}>
           Clear
@@ -678,15 +620,6 @@ function DatePickerField({ label, value, onChange }) {
 // ---------------------------------------------
 
 function runCsvSelfTests() {
-  // 0) Header normalization should still map parentheses headers
-  const csv0 = "Account #,Client,Average Duration (hrs)
-1,Test,2
-";
-  const p0 = parseCSVText(csv0);
-  const c0 = mapCSVRowToCustomer(p0.headers, p0.data[0], 1);
-  console.assert(c0.avgDurationHrs === 2, "Should map Average Duration (hrs) to avgDurationHrs");
-
-
   // 1) Escaping in CSV output
   const csv = toCSV([
     {
@@ -732,24 +665,6 @@ function runDateSelfTests() {
 
   const bad = dateFromISO("not-a-date");
   console.assert(bad === undefined, "dateFromISO should return undefined for invalid input");
-
-  const invalidDay = dateFromISO("2025-02-30");
-  console.assert(invalidDay === undefined, "dateFromISO should reject invalid calendar dates");
-
-  const empty = dateFromISO("");
-  console.assert(empty === undefined, "dateFromISO should treat empty as undefined");
-
-  // Migration should coerce objects to strings (prevents React error #31)
-  const migrated = migrateCustomer(
-    {
-      account: 1,
-      client: "Test",
-      notes: { gateCode: "1234", preferences: "Call", lastService: "2025-01-01", nextDue: "2025-02-01", internal: true },
-    },
-    1
-  );
-  console.assert(typeof migrated.notes === "string", "migrateCustomer should coerce notes to string");
-  console.assert(migrated.notes.includes("gateCode"), "migrated notes should preserve content");
 }
 
 // ---------------------------------------------
@@ -893,7 +808,6 @@ function CustomerCard({ customer, onOpen }) {
 }
 
 function Row({ label, value, icon: Icon }) {
-  const display = toDisplayString(value);
   return (
     <div className="flex items-start gap-3 rounded-xl border p-3">
       <div className="mt-0.5 rounded-xl border bg-background p-2 shadow-sm">
@@ -901,7 +815,7 @@ function Row({ label, value, icon: Icon }) {
       </div>
       <div className="min-w-0">
         <div className="text-xs text-muted-foreground">{label}</div>
-        <div className="mt-0.5 break-words text-sm font-medium">{display || "—"}</div>
+        <div className="mt-0.5 break-words text-sm font-medium">{value || "—"}</div>
       </div>
     </div>
   );
@@ -920,7 +834,7 @@ function CustomerDialog({ open, onOpenChange, customer, onSave, onDelete }) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[95vw] max-w-3xl max-h-[85vh] overflow-y-auto rounded-2xl">
+      <DialogContent className="max-w-3xl rounded-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Building2 className="h-5 w-5" /> {draft.client}
@@ -931,7 +845,7 @@ function CustomerDialog({ open, onOpenChange, customer, onSave, onDelete }) {
         </DialogHeader>
 
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="schedule">Scheduling</TabsTrigger>
             <TabsTrigger value="edit">Edit</TabsTrigger>
@@ -1227,7 +1141,7 @@ function CreateDialog({ open, onOpenChange, nextAccount, onCreate }) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[95vw] max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl">
+      <DialogContent className="max-w-2xl rounded-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Plus className="h-5 w-5" /> New customer
@@ -1335,7 +1249,7 @@ function ImportDialog({ open, onOpenChange, summary, onConfirm }) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[95vw] max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl">
+      <DialogContent className="max-w-2xl rounded-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <FileUp className="h-5 w-5" /> Import CSV
@@ -1442,30 +1356,17 @@ function DataTable({ rows, onOpen }) {
 // ---------------------------------------------
 
 export default function CustomerDatabaseUI() {
-  const [customers, setCustomers] = useState(seedCustomers);
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => {
-    // Avoid server/client hydration mismatches by loading localStorage only after mount.
+  const [customers, setCustomers] = useState(() => {
     try {
-      const raw = typeof window !== "undefined" ? window.localStorage.getItem("customer_db_v1") : null;
-      if (!raw) {
-        setCustomers(seedCustomers);
-      } else {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          const migrated = parsed.map((c, idx) => migrateCustomer(c, idx + 1));
-          setCustomers(migrated);
-        } else {
-          setCustomers(seedCustomers);
-        }
-      }
+      const raw = localStorage.getItem("customer_db_v1");
+      if (!raw) return seedCustomers;
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed) || parsed.length === 0) return seedCustomers;
+      return parsed;
     } catch {
-      setCustomers(seedCustomers);
-    } finally {
-      setHydrated(true);
+      return seedCustomers;
     }
-  }, []);
+  });
 
   const [query, setQuery] = useState("");
   const [view, setView] = useState("grid");
@@ -1495,13 +1396,12 @@ export default function CustomerDatabaseUI() {
   }, []);
 
   useEffect(() => {
-    if (!hydrated) return;
     try {
-      window.localStorage.setItem("customer_db_v1", JSON.stringify(customers));
+      localStorage.setItem("customer_db_v1", JSON.stringify(customers));
     } catch {
       // ignore storage errors
     }
-  }, [customers, hydrated]);
+  }, [customers]);
 
   const uniqueCities = useMemo(() => {
     const s = new Set(customers.map((c) => c.city).filter(Boolean));
@@ -1693,19 +1593,6 @@ export default function CustomerDatabaseUI() {
     setImportPending([]);
   };
 
-  if (!hydrated) {
-    return (
-      <div className="min-h-screen w-full bg-gradient-to-b from-background to-muted/40">
-        <div className="mx-auto max-w-7xl px-4 py-16">
-          <div className="rounded-2xl border bg-background p-6 shadow-sm">
-            <div className="text-sm text-muted-foreground">Loading customer database…</div>
-            <div className="mt-2 text-lg font-semibold">Preparing your demo</div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-background to-muted/40">
       <input
@@ -1732,14 +1619,14 @@ export default function CustomerDatabaseUI() {
             </p>
           </div>
 
-          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
-            <Button variant="secondary" className="w-full rounded-xl sm:w-auto" onClick={() => startCSVImport()}>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button variant="secondary" className="rounded-xl" onClick={() => startCSVImport()}>
               <FileUp className="mr-2 h-4 w-4" /> Import CSV
             </Button>
 
             <Button
               variant="secondary"
-              className="w-full rounded-xl sm:w-auto"
+              className="rounded-xl"
               onClick={() =>
                 downloadText(
                   `customers_${new Date().toISOString().slice(0, 10)}.csv`,
@@ -1779,7 +1666,7 @@ export default function CustomerDatabaseUI() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Button className="w-full rounded-xl sm:w-auto" onClick={() => setOpenCreate(true)}>
+            <Button className="rounded-xl" onClick={() => setOpenCreate(true)}>
               <Plus className="mr-2 h-4 w-4" /> New
             </Button>
           </div>
@@ -1801,7 +1688,7 @@ export default function CustomerDatabaseUI() {
         {/* Controls */}
         <div className="mt-6 rounded-2xl border bg-background p-4 shadow-sm">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex flex-1 flex-col gap-3">
+            <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center">
               <div className="relative w-full sm:max-w-sm">
                 <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
@@ -1814,7 +1701,7 @@ export default function CustomerDatabaseUI() {
 
               <div className="flex flex-wrap items-center gap-2">
                 <Select value={cityFilter} onValueChange={setCityFilter}>
-                  <SelectTrigger className="w-full rounded-xl sm:w-[170px]">
+                  <SelectTrigger className="w-[170px] rounded-xl">
                     <SelectValue placeholder="City" />
                   </SelectTrigger>
                   <SelectContent>
@@ -1828,7 +1715,7 @@ export default function CustomerDatabaseUI() {
                 </Select>
 
                 <Select value={zipFilter} onValueChange={setZipFilter}>
-                  <SelectTrigger className="w-full rounded-xl sm:w-[160px]">
+                  <SelectTrigger className="w-[160px] rounded-xl">
                     <SelectValue placeholder="Zip" />
                   </SelectTrigger>
                   <SelectContent>
@@ -1842,7 +1729,7 @@ export default function CustomerDatabaseUI() {
                 </Select>
 
                 <Select value={freqFilter} onValueChange={setFreqFilter}>
-                  <SelectTrigger className="w-full rounded-xl sm:w-[170px]">
+                  <SelectTrigger className="w-[170px] rounded-xl">
                     <SelectValue placeholder="Frequency" />
                   </SelectTrigger>
                   <SelectContent>
@@ -1861,7 +1748,7 @@ export default function CustomerDatabaseUI() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2">
                   <Checkbox checked={callsOnly} onCheckedChange={(v) => setCallsOnly(!!v)} id="callsOnly" />
@@ -1907,8 +1794,8 @@ export default function CustomerDatabaseUI() {
                 subtitle="Try clearing filters or searching by zip, name, or email."
                 action={
                   <Button
-              variant="secondary"
-              className="w-full rounded-xl sm:w-auto"
+                    variant="secondary"
+                    className="rounded-xl"
                     onClick={() => {
                       setQuery("");
                       setCityFilter("all");
