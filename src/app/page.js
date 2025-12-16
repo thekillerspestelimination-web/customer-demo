@@ -60,228 +60,8 @@ import {
 // Data
 // ---------------------------------------------
 
-const seedCustomers = [
-  {
-    account: 1,
-    client: "Anya Marina",
-    address: "2525 SE Ash",
-    city: "Portland",
-    state: "OR",
-    zip: "97214",
-    phone: "",
-    email1: "Anyamarina23@gmail.com",
-    email2: "",
-    callsForScheduling: true,
-    frequency: "2x/year",
-    serviceType: "",
-    rate: 85,
-    avgDurationHrs: 7,
-    preferredGardener: "",
-    preferredDay: "",
-    preferredTime: "",
-    notes: "",
-    lastService: "",
-    nextService: "",
-  },
-  {
-    account: 2,
-    client: "April Ann Fong",
-    address: "11234 SW Capitol Hwy",
-    city: "Portland",
-    state: "OR",
-    zip: "97219",
-    phone: "",
-    email1: "App1efrog@yahoo.com",
-    email2: "",
-    callsForScheduling: false,
-    frequency: "Monthly",
-    serviceType: "",
-    rate: 85,
-    avgDurationHrs: 2,
-    preferredGardener: "",
-    preferredDay: "",
-    preferredTime: "",
-    notes: "",
-    lastService: "",
-    nextService: "",
-  },
-  {
-    account: 3,
-    client: "April Severson",
-    address: "5428 SE Washington St",
-    city: "Portland",
-    state: "OR",
-    zip: "97215",
-    phone: "",
-    email1: "april@seversonevents.com",
-    email2: "",
-    callsForScheduling: true,
-    frequency: "1x/year",
-    serviceType: "Winter Pruning",
-    rate: 85,
-    avgDurationHrs: 3,
-    preferredGardener: "",
-    preferredDay: "",
-    preferredTime: "",
-    notes: "",
-    lastService: "",
-    nextService: "",
-  },
-  {
-    account: 4,
-    client: "Barb Dallum",
-    address: "1111 N Water St",
-    city: "Silverton",
-    state: "OR",
-    zip: "97381",
-    phone: "(503) 551-5530",
-    email1: "",
-    email2: "",
-    callsForScheduling: false,
-    frequency: "Monthly",
-    serviceType: "",
-    rate: 65,
-    avgDurationHrs: 2,
-    preferredGardener: "",
-    preferredDay: "",
-    preferredTime: "",
-    notes: "",
-    lastService: "",
-    nextService: "",
-  },
-  {
-    account: 5,
-    client: "Barbara Dudley",
-    address: "7407 SW 33rd Ave",
-    city: "Portland",
-    state: "OR",
-    zip: "97219",
-    phone: "",
-    email1: "barbdudley@aol.com",
-    email2: "",
-    callsForScheduling: true,
-    frequency: "1x/Year",
-    serviceType: "Winter Pruning",
-    rate: 100,
-    avgDurationHrs: 5,
-    preferredGardener: "",
-    preferredDay: "",
-    preferredTime: "",
-    notes: "",
-    lastService: "",
-    nextService: "",
-  },
-  {
-    account: 6,
-    client: "Barry Pelsner",
-    address: "2335 NE 24 Ave",
-    city: "Portland",
-    state: "OR",
-    zip: "97212",
-    phone: "",
-    email1: "pelznerb@gmail.com",
-    email2: "",
-    callsForScheduling: true,
-    frequency: "2x/Year",
-    serviceType: "Fall/Spring Pruning",
-    rate: 100,
-    avgDurationHrs: 3,
-    preferredGardener: "",
-    preferredDay: "",
-    preferredTime: "",
-    notes: "",
-    lastService: "",
-    nextService: "",
-  },
-  {
-    account: 7,
-    client: "Beth Rice",
-    address: "4125 SE 14th Ave",
-    city: "Portland",
-    state: "OR",
-    zip: "97202",
-    phone: "",
-    email1: "Beth_rice1@yahoo.com",
-    email2: "",
-    callsForScheduling: false,
-    frequency: "Monthly",
-    serviceType: "",
-    rate: 85,
-    avgDurationHrs: 3,
-    preferredGardener: "",
-    preferredDay: "",
-    preferredTime: "",
-    notes: "",
-    lastService: "",
-    nextService: "",
-  },
-  {
-    account: 8,
-    client: "Bobbi Jo Snethen & Michael Davidson",
-    address: "6816 N Williams",
-    city: "Portland",
-    state: "OR",
-    zip: "97217",
-    phone: "",
-    email1: "bobbijo.snethen@gmail.com",
-    email2: "",
-    callsForScheduling: false,
-    frequency: "Monthly",
-    serviceType: "",
-    rate: 85,
-    avgDurationHrs: 3,
-    preferredGardener: "",
-    preferredDay: "",
-    preferredTime: "",
-    notes: "",
-    lastService: "",
-    nextService: "",
-  },
-  {
-    account: 9,
-    client: "Bill Curtin",
-    address: "2623 NE 43rd Ave",
-    city: "Portland",
-    state: "OR",
-    zip: "97317",
-    phone: "",
-    email1: "bllcurtin@gmail.com",
-    email2: "",
-    callsForScheduling: false,
-    frequency: "Montlhy",
-    serviceType: "",
-    rate: 65,
-    avgDurationHrs: 2,
-    preferredGardener: "",
-    preferredDay: "",
-    preferredTime: "",
-    notes: "",
-    lastService: "",
-    nextService: "",
-  },
-  {
-    account: 10,
-    client: "Bill McNamee & Hannah Kuhn",
-    address: "2734 NE 35th Place",
-    city: "Portland",
-    state: "OR",
-    zip: "97212",
-    phone: "",
-    email1: "wdmhak@gmail.com",
-    email2: "",
-    callsForScheduling: true,
-    frequency: "As Needed",
-    serviceType: "",
-    rate: 85,
-    avgDurationHrs: 4,
-    preferredGardener: "",
-    preferredDay: "",
-    preferredTime: "",
-    notes: "",
-    lastService: "",
-    nextService: "",
-  },
-];
+const seedCustomers = [];
+
 
 const DAYS_OF_WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -295,6 +75,48 @@ function cx(...classes) {
 
 function normalize(s) {
   return (s ?? "").toString().trim().toLowerCase();
+}
+
+function toDisplayString(v) {
+  if (v === null || v === undefined) return "";
+  if (typeof v === "string") return v;
+  if (typeof v === "number" || typeof v === "boolean") return String(v);
+  if (Array.isArray(v)) return v.map((x) => toDisplayString(x)).filter(Boolean).join(", ");
+  if (typeof v === "object") {
+    try {
+      return JSON.stringify(v);
+    } catch {
+      return "";
+    }
+  }
+  return "";
+}
+
+function migrateCustomer(raw, fallbackAccount) {
+  const c = raw && typeof raw === "object" ? raw : {};
+  // Preserve known fields, but coerce anything potentially non-string to string to avoid React child errors.
+  return {
+    account: safeNum(c.account, fallbackAccount),
+    client: toDisplayString(c.client),
+    address: toDisplayString(c.address),
+    city: toDisplayString(c.city),
+    state: toDisplayString(c.state),
+    zip: toDisplayString(c.zip),
+    phone: toDisplayString(c.phone),
+    email1: toDisplayString(c.email1),
+    email2: toDisplayString(c.email2),
+    callsForScheduling: !!c.callsForScheduling,
+    frequency: toDisplayString(c.frequency) || "Monthly",
+    serviceType: toDisplayString(c.serviceType),
+    rate: safeNum(c.rate, 0),
+    avgDurationHrs: safeNum(c.avgDurationHrs, 0),
+    preferredGardener: toDisplayString(c.preferredGardener),
+    preferredDay: toDisplayString(c.preferredDay),
+    preferredTime: toDisplayString(c.preferredTime),
+    notes: toDisplayString(c.notes),
+    lastService: toDisplayString(c.lastService),
+    nextService: toDisplayString(c.nextService),
+  };
 }
 
 function safeNum(n, fallback = 0) {
@@ -681,6 +503,18 @@ function runDateSelfTests() {
 
   const empty = dateFromISO("");
   console.assert(empty === undefined, "dateFromISO should treat empty as undefined");
+
+  // Migration should coerce objects to strings (prevents React error #31)
+  const migrated = migrateCustomer(
+    {
+      account: 1,
+      client: "Test",
+      notes: { gateCode: "1234", preferences: "Call", lastService: "2025-01-01", nextDue: "2025-02-01", internal: true },
+    },
+    1
+  );
+  console.assert(typeof migrated.notes === "string", "migrateCustomer should coerce notes to string");
+  console.assert(migrated.notes.includes("gateCode"), "migrated notes should preserve content");
 }
 
 // ---------------------------------------------
@@ -824,6 +658,7 @@ function CustomerCard({ customer, onOpen }) {
 }
 
 function Row({ label, value, icon: Icon }) {
+  const display = toDisplayString(value);
   return (
     <div className="flex items-start gap-3 rounded-xl border p-3">
       <div className="mt-0.5 rounded-xl border bg-background p-2 shadow-sm">
@@ -831,7 +666,7 @@ function Row({ label, value, icon: Icon }) {
       </div>
       <div className="min-w-0">
         <div className="text-xs text-muted-foreground">{label}</div>
-        <div className="mt-0.5 break-words text-sm font-medium">{value || "—"}</div>
+        <div className="mt-0.5 break-words text-sm font-medium">{display || "—"}</div>
       </div>
     </div>
   );
@@ -1383,8 +1218,12 @@ export default function CustomerDatabaseUI() {
         setCustomers(seedCustomers);
       } else {
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed) && parsed.length > 0) setCustomers(parsed);
-        else setCustomers(seedCustomers);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const migrated = parsed.map((c, idx) => migrateCustomer(c, idx + 1));
+          setCustomers(migrated);
+        } else {
+          setCustomers(seedCustomers);
+        }
       }
     } catch {
       setCustomers(seedCustomers);
