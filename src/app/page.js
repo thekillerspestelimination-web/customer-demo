@@ -1095,8 +1095,8 @@ function CustomerDialog({ open, onOpenChange, customer, onSave, onDelete, onSave
           </div>
         </div>
 
-        </Tabs>
-
+        </TabsContent>
+                  
         <DialogFooter>
           <div className="flex w-full flex-col-reverse gap-2 sm:flex-row sm:justify-between">
             <Button
