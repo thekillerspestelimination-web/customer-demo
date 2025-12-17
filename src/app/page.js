@@ -1064,6 +1064,15 @@ function CustomerDialog({ open, onOpenChange, customer, onSave, onDelete, onSave
             </Select>
           </div>
 
+  <div className="space-y-2">
+  <Label>Last Service Date</Label>
+  <Input
+    type="date"
+    value={draft.lastServiceDate || ""}
+    onChange={(e) => set("lastServiceDate", e.target.value)}
+  />
+</div>
+
           <div className="space-y-2">
             <Label>Service Type</Label>
             <Input
