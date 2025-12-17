@@ -1243,6 +1243,1177 @@ function CreateDialog({ open, onOpenChange, nextAccount, onCreate }) {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Monthly">Monthly</SelectItem>
+                    callsForScheduling: true,
+    frequency: "2x/year",
+    serviceType: "",
+    rate: 85,
+    avgDurationHrs: 7,
+    preferredGardener: "",
+    preferredDay: "",
+    preferredTime: "",
+    notes: "",
+    lastService: "",
+    nextService: "",
+  },
+  {
+    account: 2,
+    client: "April Ann Fong",
+    address: "11234 SW Capitol Hwy",
+    city: "Portland",
+    state: "OR",
+    zip: "97219",
+    phone: "",
+    email1: "App1efrog@yahoo.com",
+    email2: "",
+    callsForScheduling: false,
+    frequency: "Monthly",
+    serviceType: "",
+    rate: 85,
+    avgDurationHrs: 2,
+    preferredGardener: "",
+    preferredDay: "",
+    preferredTime: "",
+    notes: "",
+    lastService: "",
+    nextService: "",
+  },
+  {
+    account: 3,
+    client: "April Severson",
+    address: "5428 SE Washington St",
+    city: "Portland",
+    state: "OR",
+    zip: "97215",
+    phone: "",
+    email1: "april@seversonevents.com",
+    email2: "",
+    callsForScheduling: true,
+    frequency: "1x/year",
+    serviceType: "Winter Pruning",
+    rate: 85,
+    avgDurationHrs: 3,
+    preferredGardener: "",
+    preferredDay: "",
+    preferredTime: "",
+    notes: "",
+    lastService: "",
+    nextService: "",
+  },
+  {
+    account: 4,
+    client: "Barb Dallum",
+    address: "1111 N Water St",
+    city: "Silverton",
+    state: "OR",
+    zip: "97381",
+    phone: "(503) 551-5530",
+    email1: "",
+    email2: "",
+    callsForScheduling: false,
+    frequency: "Monthly",
+    serviceType: "",
+    rate: 65,
+    avgDurationHrs: 2,
+    preferredGardener: "",
+    preferredDay: "",
+    preferredTime: "",
+    notes: "",
+    lastService: "",
+    nextService: "",
+  },
+  {
+    account: 5,
+    client: "Barbara Dudley",
+    address: "7407 SW 33rd Ave",
+    city: "Portland",
+    state: "OR",
+    zip: "97219",
+    phone: "",
+    email1: "barbdudley@aol.com",
+    email2: "",
+    callsForScheduling: true,
+    frequency: "1x/Year",
+    serviceType: "Winter Pruning",
+    rate: 100,
+    avgDurationHrs: 5,
+    preferredGardener: "",
+    preferredDay: "",
+    preferredTime: "",
+    notes: "",
+    lastService: "",
+    nextService: "",
+  },
+  {
+    account: 6,
+    client: "Barry Pelsner",
+    address: "2335 NE 24 Ave",
+    city: "Portland",
+    state: "OR",
+    zip: "97212",
+    phone: "",
+    email1: "pelznerb@gmail.com",
+    email2: "",
+    callsForScheduling: true,
+    frequency: "2x/Year",
+    serviceType: "Fall/Spring Pruning",
+    rate: 100,
+    avgDurationHrs: 3,
+    preferredGardener: "",
+    preferredDay: "",
+    preferredTime: "",
+    notes: "",
+    lastService: "",
+    nextService: "",
+  },
+  {
+    account: 7,
+    client: "Beth Rice",
+    address: "4125 SE 14th Ave",
+    city: "Portland",
+    state: "OR",
+    zip: "97202",
+    phone: "",
+    email1: "Beth_rice1@yahoo.com",
+    email2: "",
+    callsForScheduling: false,
+    frequency: "Monthly",
+    serviceType: "",
+    rate: 85,
+    avgDurationHrs: 3,
+    preferredGardener: "",
+    preferredDay: "",
+    preferredTime: "",
+    notes: "",
+    lastService: "",
+    nextService: "",
+  },
+  {
+    account: 8,
+    client: "Bobbi Jo Snethen & Michael Davidson",
+    address: "6816 N Williams",
+    city: "Portland",
+    state: "OR",
+    zip: "97217",
+    phone: "",
+    email1: "bobbijo.snethen@gmail.com",
+    email2: "",
+    callsForScheduling: false,
+    frequency: "Monthly",
+    serviceType: "",
+    rate: 85,
+    avgDurationHrs: 3,
+    preferredGardener: "",
+    preferredDay: "",
+    preferredTime: "",
+    notes: "",
+    lastService: "",
+    nextService: "",
+  },
+  {
+    account: 9,
+    client: "Bill Curtin",
+    address: "2623 NE 43rd Ave",
+    city: "Portland",
+    state: "OR",
+    zip: "97317",
+    phone: "",
+    email1: "bllcurtin@gmail.com",
+    email2: "",
+    callsForScheduling: false,
+    frequency: "Montlhy",
+    serviceType: "",
+    rate: 65,
+    avgDurationHrs: 2,
+    preferredGardener: "",
+    preferredDay: "",
+    preferredTime: "",
+    notes: "",
+    lastService: "",
+    nextService: "",
+  },
+  {
+    account: 10,
+    client: "Bill McNamee & Hannah Kuhn",
+    address: "2734 NE 35th Place",
+    city: "Portland",
+    state: "OR",
+    zip: "97212",
+    phone: "",
+    email1: "wdmhak@gmail.com",
+    email2: "",
+    callsForScheduling: true,
+    frequency: "As Needed",
+    serviceType: "",
+    rate: 85,
+    avgDurationHrs: 4,
+    preferredGardener: "",
+    preferredDay: "",
+    preferredTime: "",
+    notes: "",
+    lastService: "",
+    nextService: "",
+  },
+];
+
+const DAYS_OF_WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+// ---------------------------------------------
+// Utilities
+// ---------------------------------------------
+
+function cx(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
+
+function normalize(s) {
+  return (s ?? "").toString().trim().toLowerCase();
+}
+
+function safeNum(n, fallback = 0) {
+  const x = Number(n);
+  return Number.isFinite(x) ? x : fallback;
+}
+
+function toCSV(rows) {
+  const header = [
+    "Account #",
+    "Client",
+    "Address",
+    "City",
+    "State",
+    "Zip Code",
+    "Phone",
+    "Email",
+    "Email #2",
+    "Client Calls For Scheduling",
+    "Frequency",
+    "Service Type",
+    "Rate",
+    "Average Duration (hrs)",
+    "Preferred Gardener",
+    "Preferred Day",
+    "Preferred Time",
+    "Notes",
+    "Last Service",
+    "Next Service",
+  ];
+
+  const esc = (v) => {
+    const s = (v ?? "").toString();
+    // Quote if contains comma, quote, CR, or LF
+    if (/[\n\r,\"]/g.test(s)) return `"${s.replace(/"/g, '""')}"`;
+    return s;
+  };
+
+  const lines = [header.join(",")];
+  for (const r of rows) {
+    lines.push(
+      [
+        r.account,
+        r.client,
+        r.address,
+        r.city,
+        r.state,
+        r.zip,
+        r.phone,
+        r.email1,
+        r.email2,
+        r.callsForScheduling ? "Yes" : "No",
+        r.frequency,
+        r.serviceType,
+        r.rate,
+        r.avgDurationHrs,
+        r.preferredGardener,
+        r.preferredDay,
+        r.preferredTime,
+        r.notes,
+        r.lastService,
+        r.nextService,
+      ]
+        .map(esc)
+        .join(",")
+    );
+  }
+  return lines.join("\n");
+}
+
+// CSV parser that supports quoted fields and commas/newlines inside quotes.
+function parseCSVText(text) {
+  const rows = [];
+  let row = [];
+  let field = "";
+  let inQuotes = false;
+
+  const pushField = () => {
+    row.push(field);
+    field = "";
+  };
+
+  const pushRow = () => {
+    // Skip trailing empty line
+    if (row.length === 1 && (row[0] ?? "") === "" && rows.length > 0) {
+      row = [];
+      return;
+    }
+    rows.push(row);
+    row = [];
+  };
+
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+
+    if (inQuotes) {
+      if (ch === '"') {
+        const next = text[i + 1];
+        if (next === '"') {
+          field += '"';
+          i++;
+        } else {
+          inQuotes = false;
+        }
+      } else {
+        field += ch;
+      }
+      continue;
+    }
+
+    if (ch === '"') {
+      inQuotes = true;
+      continue;
+    }
+
+    if (ch === ",") {
+      pushField();
+      continue;
+    }
+
+    if (ch === "\n") {
+      pushField();
+      pushRow();
+      continue;
+    }
+
+    if (ch === "\r") continue;
+
+    field += ch;
+  }
+
+  pushField();
+  pushRow();
+
+  if (rows.length === 0) return { headers: [], data: [] };
+
+  const headers = (rows[0] || []).map((h) => (h ?? "").toString().trim());
+  const data = rows
+    .slice(1)
+    .filter((r) => r.some((c) => (c ?? "").toString().trim() !== ""));
+
+  return { headers, data };
+}
+
+function headerKey(h) {
+  const s = normalize(h);
+  let out = "";
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    const ok =
+      (ch >= "a" && ch <= "z") ||
+      (ch >= "0" && ch <= "9") ||
+      ch === " " ||
+      ch === "#" ||
+      ch === "/";
+    if (ok) out += ch;
+  }
+  return out.split(" ").filter(Boolean).join(" ");
+}
+
+function getCell(headers, row, aliases) {
+  for (let i = 0; i < headers.length; i++) {
+    const hk = headerKey(headers[i]);
+    if (aliases.includes(hk)) return (row[i] ?? "").toString().trim();
+  }
+  return "";
+}
+
+function parseYesNo(v) {
+  const s = normalize(v);
+  if (!s) return false;
+  return s === "yes" || s === "y" || s === "true" || s === "1";
+}
+
+function mapCSVRowToCustomer(headers, row, fallbackAccount) {
+  // Robust CSV column mapping (case/space/punctuation-insensitive)
+  const norm = (s) =>
+    (s ?? "")
+      .toString()
+      .trim()
+      .toLowerCase()
+      .replace(/﻿/g, "") // BOM
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim();
+
+  const headerIndex = new Map(headers.map((h, i) => [norm(h), i]));
+
+  const get = (aliases, fallback = "") => {
+    for (const a of aliases) {
+      const idx = headerIndex.get(norm(a));
+      if (idx !== undefined) return row[idx] ?? fallback;
+    }
+    // If we didn't find an exact alias match, try a contains match (helps with slight header variants)
+    const wanted = aliases.map((a) => norm(a));
+    for (const [h, idx] of headerIndex.entries()) {
+      if (wanted.some((w) => h.includes(w))) return row[idx] ?? fallback;
+    }
+    return fallback;
+  };
+
+  const asNum = (v, fb = 0) => {
+    const s = (v ?? "").toString().trim();
+    if (!s) return fb;
+    const x = Number(s.replace(/[^0-9.\-]/g, ""));
+    return Number.isFinite(x) ? x : fb;
+  };
+
+  const asYesNo = (v) => {
+    const s = (v ?? "").toString().trim().toLowerCase();
+    if (["yes", "y", "true", "1"].includes(s)) return true;
+    if (["no", "n", "false", "0"].includes(s)) return false;
+    return false;
+  };
+
+  // Account
+  const acctRaw = get(["Account #", "Account", "Acct", "Account Number", "Account No"]).toString().trim();
+  const account = acctRaw ? asNum(acctRaw, fallbackAccount) : fallbackAccount;
+
+  // Core fields
+  const client = get(["Client", "Customer", "Name", "Client Name"]).toString().trim();
+  const address = get(["Address", "Street", "Street Address"]).toString().trim();
+  const city = get(["City"]).toString().trim();
+  const state = get(["State", "ST"]).toString().trim();
+  const zip = get(["Zip Code", "Zip", "Postal", "Postal Code"]).toString().trim();
+  const phone = get(["Phone", "Phone #", "Telephone"]).toString().trim();
+  const email1 = get(["Email", "Email 1", "Primary Email"]).toString().trim();
+  const email2 = get(["Email #2", "Email 2", "Secondary Email"]).toString().trim();
+
+  // Scheduling + services
+  const callsForScheduling = asYesNo(
+    get(["Client Calls For Scheduling", "Calls For Scheduling", "Calls to Schedule", "Client Calls"]) 
+  );
+  const frequency = get(["Frequency", "Service Frequency"]).toString().trim();
+  const serviceType = get(["Service Type", "Service", "Work Type"]).toString().trim();
+  const rate = asNum(get(["Rate", "Price", "Hourly Rate", "Service Rate"]), 0);
+
+  // **Avg hours** mapping (this is what you reported)
+  const avgDurationHrs = asNum(
+    get([
+      "Average Duration (hrs)",
+      "Average Duration", 
+      "Avg Duration (hrs)",
+      "Avg Duration",
+      "Average Hours",
+      "Avg Hours",
+      "Avg. Hours",
+      "Hours",
+      "Hrs",
+    ]),
+    0
+  );
+
+  const preferredGardener = get(["Preferred Gardener", "Preferred Tech", "Preferred Technician"]).toString().trim();
+  const preferredDay = get(["Preferred Day", "Day Preference"]).toString().trim();
+  const preferredTime = get(["Preferred Time", "Time Preference"]).toString().trim();
+
+  const notes = get(["Notes", "Note"]).toString().trim();
+  const lastService = get(["Last Service", "Last Service Date"]).toString().trim();
+  const nextService = get(["Next Service", "Next Service Date"]).toString().trim();
+
+  return {
+    account,
+    client,
+    address,
+    city,
+    state,
+    zip,
+    phone,
+    email1,
+    email2,
+    callsForScheduling,
+    frequency,
+    serviceType,
+    rate,
+    avgDurationHrs,
+    preferredGardener,
+    preferredDay,
+    preferredTime,
+    notes,
+    lastService,
+    nextService,
+  };
+}
+
+function downloadText(filename, content, mime = "text/plain;charset=utf-8") {
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function statBuckets(customers) {
+  const byCity = new Map();
+  const byZip = new Map();
+
+  for (const c of customers) {
+    const cityKey = c.city || "(Unknown)";
+    const zipKey = c.zip || "(Unknown)";
+    byCity.set(cityKey, (byCity.get(cityKey) || 0) + 1);
+    byZip.set(zipKey, (byZip.get(zipKey) || 0) + 1);
+  }
+
+  const toSorted = (m) => Array.from(m.entries()).sort((a, b) => b[1] - a[1]);
+  return { byCity: toSorted(byCity), byZip: toSorted(byZip) };
+}
+
+function frequencyBadge(freq) {
+  const f = normalize(freq);
+  if (f.includes("monthly")) return { label: "Monthly", variant: "default" };
+  if (f.includes("as needed")) return { label: "As Needed", variant: "secondary" };
+  if (f.includes("2x")) return { label: freq || "2x/Year", variant: "outline" };
+  if (f.includes("1x") || f.includes("annual") || f.includes("year"))
+    return { label: freq || "Annual", variant: "outline" };
+  return { label: freq || "—", variant: "secondary" };
+}
+
+function dateFromISO(iso) {
+  const s = (iso ?? "").toString().trim();
+  if (!s) return undefined;
+  try {
+    const d = parseISO(s);
+    return isValid(d) ? d : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function isoFromDate(d) {
+  return format(d, "yyyy-MM-dd");
+}
+
+function DatePickerField({ label, value, onChange }) {
+  // Robust fallback: use native date input (always available) rather than depending on a Calendar component.
+  // Stores value as YYYY-MM-DD.
+  const selected = dateFromISO(value);
+
+  return (
+    <div className="space-y-2">
+      {label ? <Label>{label}</Label> : null}
+
+      <div className="relative">
+        <Calendar className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          type="date"
+          className="rounded-xl pl-9"
+          value={value || ""}
+          onChange={(e) => onChange(e.target.value)}
+        />
+      </div>
+
+      <div className="flex items-center justify-between">
+        <div className="text-xs text-muted-foreground">
+          {selected ? `Selected: ${format(selected, "PPP")}` : "No date selected"}
+        </div>
+        <Button type="button" variant="ghost" className="h-8 rounded-xl" onClick={() => onChange("")}>
+          Clear
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------
+// Self-tests (run once in dev)
+// ---------------------------------------------
+
+function runCsvSelfTests() {
+  // 1) Escaping in CSV output
+  const csv = toCSV([
+    {
+      account: 99,
+      client: 'A, "B"',
+      address: "Line1\nLine2",
+      city: "Portland",
+      state: "OR",
+      zip: "97200",
+      phone: "",
+      email1: "",
+      email2: "",
+      callsForScheduling: false,
+      frequency: "Monthly",
+      serviceType: "",
+      rate: 1,
+      avgDurationHrs: 2,
+      preferredGardener: "",
+      preferredDay: "",
+      preferredTime: "",
+      notes: "",
+      lastService: "",
+      nextService: "",
+    },
+  ]);
+  console.assert(csv.includes('"A, ""B"""'), "CSV should escape quotes and commas");
+  console.assert(csv.includes('"Line1\nLine2"'), "CSV should quote newline fields");
+
+  // 2) Parsing quoted commas/newlines
+  const sample =
+    "Account #,Client,Address\n" + "1,Normal,Simple\n" + '2,"Comma, Name","Multi\nLine"\n';
+  const parsed = parseCSVText(sample);
+  console.assert(parsed.headers.length === 3, "Should parse headers");
+  console.assert(parsed.data.length === 2, "Should parse 2 data rows");
+  console.assert(parsed.data[1][1] === "Comma, Name", "Should preserve commas inside quotes");
+  console.assert(parsed.data[1][2] === "Multi\nLine", "Should preserve newlines inside quotes");
+}
+
+function runDateSelfTests() {
+  const d = dateFromISO("2025-12-15");
+  console.assert(!!d, "dateFromISO should parse YYYY-MM-DD");
+  if (d) console.assert(isoFromDate(d) === "2025-12-15", "isoFromDate should roundtrip");
+
+  const bad = dateFromISO("not-a-date");
+  console.assert(bad === undefined, "dateFromISO should return undefined for invalid input");
+}
+
+// ---------------------------------------------
+// UI Components
+// ---------------------------------------------
+
+function StatPill({ icon: Icon, label, value, sub }) {
+  return (
+    <Card className="rounded-2xl shadow-sm">
+      <CardContent className="p-4">
+        <div className="flex items-start gap-3">
+          <div className="mt-0.5 rounded-2xl border bg-background p-2 shadow-sm">
+            <Icon className="h-4 w-4" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-sm text-muted-foreground">{label}</div>
+            <div className="truncate text-2xl font-semibold">{value}</div>
+            {sub ? <div className="mt-1 text-xs text-muted-foreground">{sub}</div> : null}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function MiniBarList({ title, items }) {
+  const max = Math.max(1, ...items.map(([, v]) => v));
+  return (
+    <Card className="rounded-2xl shadow-sm">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base">{title}</CardTitle>
+        <CardDescription>Count distribution</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-2">
+        {items.length === 0 ? (
+          <div className="text-sm text-muted-foreground">No data</div>
+        ) : (
+          items.map(([k, v]) => (
+            <div key={k} className="space-y-1">
+              <div className="flex items-center justify-between text-sm">
+                <div className="truncate pr-2">{k}</div>
+                <div className="tabular-nums text-muted-foreground">{v}</div>
+              </div>
+              <div className="h-2 w-full rounded-full bg-muted">
+                <div
+                  className="h-2 rounded-full bg-foreground/20"
+                  style={{ width: `${Math.round((v / max) * 100)}%` }}
+                />
+              </div>
+            </div>
+          ))
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function EmptyState({ title, subtitle, action }) {
+  return (
+    <Card className="rounded-2xl shadow-sm">
+      <CardContent className="p-10 text-center">
+        <div className="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-2xl border bg-background shadow-sm">
+          <LayoutGrid className="h-5 w-5" />
+        </div>
+        <div className="text-lg font-semibold">{title}</div>
+        <div className="mt-1 text-sm text-muted-foreground">{subtitle}</div>
+        {action ? <div className="mt-6">{action}</div> : null}
+      </CardContent>
+    </Card>
+  );
+}
+
+function CustomerCard({ customer, onOpen }) {
+  const b = frequencyBadge(customer.frequency);
+  const hasAnyEmail = !!(customer.email1 || customer.email2);
+  const hasPhone = !!customer.phone;
+
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      className="group text-left"
+      aria-label={`Open ${customer.client}`}
+    >
+      <Card className="h-full rounded-2xl shadow-sm transition-all group-hover:-translate-y-0.5 group-hover:shadow-md">
+        <CardHeader className="pb-3">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <CardTitle className="truncate text-base">{customer.client}</CardTitle>
+              <CardDescription className="truncate">
+                #{customer.account} • {customer.city}, {customer.state} {customer.zip}
+              </CardDescription>
+            </div>
+            <Badge variant={b.variant}>{b.label}</Badge>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex items-start gap-2 text-sm text-muted-foreground">
+            <MapPin className="mt-0.5 h-4 w-4" />
+            <div className="min-w-0 truncate">{customer.address}</div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-xl border p-3">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <DollarSign className="h-3.5 w-3.5" /> Rate
+              </div>
+              <div className="mt-1 text-sm font-semibold tabular-nums">${safeNum(customer.rate).toFixed(0)}</div>
+            </div>
+            <div className="rounded-xl border p-3">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Timer className="h-3.5 w-3.5" /> Avg. Hours
+              </div>
+              <div className="mt-1 text-sm font-semibold tabular-nums">{safeNum(customer.avgDurationHrs)}</div>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            {customer.callsForScheduling ? <Badge variant="secondary">Calls to Schedule</Badge> : null}
+            {customer.serviceType ? (
+              <Badge variant="outline">{customer.serviceType}</Badge>
+            ) : (
+              <Badge variant="outline">Service TBD</Badge>
+            )}
+          </div>
+
+          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+            <div className={cx("flex items-center gap-1", !hasPhone && "opacity-50")}>
+              <Phone className="h-3.5 w-3.5" />
+              <span>{hasPhone ? "Phone" : "No phone"}</span>
+            </div>
+            <div className={cx("flex items-center gap-1", !hasAnyEmail && "opacity-50")}>
+              <Mail className="h-3.5 w-3.5" />
+              <span>{hasAnyEmail ? "Email" : "No email"}</span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </button>
+  );
+}
+
+function Row({ label, value, icon: Icon }) {
+  return (
+    <div className="flex items-start gap-3 rounded-xl border p-3">
+      <div className="mt-0.5 rounded-xl border bg-background p-2 shadow-sm">
+        <Icon className="h-4 w-4" />
+      </div>
+      <div className="min-w-0">
+        <div className="text-xs text-muted-foreground">{label}</div>
+        <div className="mt-0.5 break-words text-sm font-medium">{value || "—"}</div>
+      </div>
+    </div>
+  );
+}
+
+function CustomerDialog({ open, onOpenChange, customer, onSave, onDelete }) {
+  const [draft, setDraft] = useState(null);
+
+  useEffect(() => {
+    setDraft(customer ? { ...customer } : null);
+  }, [customer]);
+
+  const set = (k, v) => setDraft((d) => ({ ...(d || {}), [k]: v }));
+
+  if (!draft) return null;
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-3xl rounded-2xl">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Building2 className="h-5 w-5" /> {draft.client}
+          </DialogTitle>
+          <DialogDescription>
+            Account #{draft.account} • {draft.city}, {draft.state} {draft.zip}
+          </DialogDescription>
+        </DialogHeader>
+
+        <Tabs defaultValue="overview" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="schedule">Scheduling</TabsTrigger>
+            <TabsTrigger value="edit">Edit</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="overview" className="mt-4 space-y-4">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+              <Row
+                icon={MapPin}
+                label="Address"
+                value={`${draft.address}${draft.city ? `, ${draft.city}` : ""}${draft.state ? `, ${draft.state}` : ""}${draft.zip ? ` ${draft.zip}` : ""}`}
+              />
+              <Row icon={Phone} label="Phone" value={draft.phone} />
+              <Row icon={Mail} label="Email" value={draft.email1} />
+              <Row icon={Mail} label="Email #2" value={draft.email2} />
+            </div>
+
+            <Separator />
+
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+              <Row icon={DollarSign} label="Rate" value={draft.rate ? `$${safeNum(draft.rate).toFixed(0)}` : ""} />
+              <Row icon={Timer} label="Avg Duration (hrs)" value={draft.avgDurationHrs?.toString()} />
+              <Row icon={Filter} label="Service Type" value={draft.serviceType} />
+            </div>
+
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+              <Row icon={Calendar} label="Frequency" value={draft.frequency} />
+              <Row icon={User} label="Preferred Gardener" value={draft.preferredGardener} />
+              <Row icon={Filter} label="Notes" value={draft.notes} />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="schedule" className="mt-4 space-y-4">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+              <div className="rounded-xl border p-3">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Calendar className="h-3.5 w-3.5" /> Preferred Day
+                </div>
+                <div className="mt-2">
+                  <Select
+                    value={draft.preferredDay ? draft.preferredDay : "__none__"}
+                    onValueChange={(v) => set("preferredDay", v === "__none__" ? "" : v)}
+                  >
+                    <SelectTrigger className="rounded-xl">
+                      <SelectValue placeholder="Select a day" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="__none__">None</SelectItem>
+                      {DAYS_OF_WEEK.map((d) => (
+                        <SelectItem key={d} value={d}>
+                          {d}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <Row icon={Clock} label="Preferred Time" value={draft.preferredTime} />
+              <Row icon={Phone} label="Client Calls For Scheduling" value={draft.callsForScheduling ? "Yes" : "No"} />
+            </div>
+
+            <Separator />
+
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+              <DatePickerField label="Last Service" value={draft.lastService} onChange={(v) => set("lastService", v)} />
+              <DatePickerField label="Next Service" value={draft.nextService} onChange={(v) => set("nextService", v)} />
+            </div>
+
+            <div className="rounded-2xl border p-4">
+              <div className="text-sm font-semibold">Quick actions</div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    const to = draft.email1 || draft.email2;
+                    if (!to) return;
+                    window.location.href = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(
+                      `Scheduling: ${draft.client}`
+                    )}`;
+                  }}
+                >
+                  <Mail className="mr-2 h-4 w-4" /> Email
+                </Button>
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    if (!draft.phone) return;
+                    window.location.href = `tel:${draft.phone}`;
+                  }}
+                >
+                  <Phone className="mr-2 h-4 w-4" /> Call
+                </Button>
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    const q = `${draft.address}, ${draft.city}, ${draft.state} ${draft.zip}`.trim();
+                    window.open(
+                      `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`,
+                      "_blank"
+                    );
+                  }}
+                >
+                  <MapPin className="mr-2 h-4 w-4" /> Open in Maps
+                </Button>
+              </div>
+              <div className="mt-2 text-xs text-muted-foreground">
+                Email/Call buttons open your default apps. Maps opens a new tab.
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="edit" className="mt-4 space-y-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label>Client</Label>
+                <Input value={draft.client} onChange={(e) => set("client", e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <Label>Account #</Label>
+                <Input value={draft.account} onChange={(e) => set("account", Number(e.target.value) || draft.account)} />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Address</Label>
+                <Input value={draft.address} onChange={(e) => set("address", e.target.value)} />
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="col-span-1 space-y-2">
+                  <Label>City</Label>
+                  <Input value={draft.city} onChange={(e) => set("city", e.target.value)} />
+                </div>
+                <div className="col-span-1 space-y-2">
+                  <Label>State</Label>
+                  <Input value={draft.state} onChange={(e) => set("state", e.target.value)} />
+                </div>
+                <div className="col-span-1 space-y-2">
+                  <Label>Zip</Label>
+                  <Input value={draft.zip} onChange={(e) => set("zip", e.target.value)} />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Phone</Label>
+                <Input value={draft.phone} onChange={(e) => set("phone", e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <Label>Email</Label>
+                <Input value={draft.email1} onChange={(e) => set("email1", e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <Label>Email #2</Label>
+                <Input value={draft.email2} onChange={(e) => set("email2", e.target.value)} />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Frequency</Label>
+                <Select value={draft.frequency || ""} onValueChange={(v) => set("frequency", v)}>
+                  <SelectTrigger className="rounded-xl">
+                    <SelectValue placeholder="Select frequency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Monthly">Monthly</SelectItem>
+                    <SelectItem value="2x/Year">2x/Year</SelectItem>
+                    <SelectItem value="1x/Year">1x/Year</SelectItem>
+                    <SelectItem value="As Needed">As Needed</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Service Type</Label>
+                <Input
+                  value={draft.serviceType}
+                  onChange={(e) => set("serviceType", e.target.value)}
+                  placeholder="e.g., Winter Pruning"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label>Rate</Label>
+                  <Input value={draft.rate} onChange={(e) => set("rate", Number(e.target.value) || 0)} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Avg Duration (hrs)</Label>
+                  <Input value={draft.avgDurationHrs} onChange={(e) => set("avgDurationHrs", Number(e.target.value) || 0)} />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Preferred Gardener</Label>
+                <Input value={draft.preferredGardener} onChange={(e) => set("preferredGardener", e.target.value)} />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label>Preferred Day</Label>
+                  <Select value={draft.preferredDay ? draft.preferredDay : "__none__"} onValueChange={(v) => set("preferredDay", v === "__none__" ? "" : v)}>
+                    <SelectTrigger className="rounded-xl">
+                      <SelectValue placeholder="Select a day" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="__none__">None</SelectItem>
+                      {DAYS_OF_WEEK.map((d) => (
+                        <SelectItem key={d} value={d}>
+                          {d}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Preferred Time</Label>
+                  <Input value={draft.preferredTime} onChange={(e) => set("preferredTime", e.target.value)} placeholder="e.g., 10:00 AM" />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between rounded-xl border p-3">
+                <div>
+                  <div className="text-sm font-semibold">Client calls for scheduling</div>
+                  <div className="text-xs text-muted-foreground">If enabled, client expects to initiate scheduling.</div>
+                </div>
+                <Switch checked={!!draft.callsForScheduling} onCheckedChange={(v) => set("callsForScheduling", !!v)} />
+              </div>
+
+              <div className="space-y-2 md:col-span-2">
+                <Label>Notes</Label>
+                <Input value={draft.notes} onChange={(e) => set("notes", e.target.value)} placeholder="Add any property notes or preferences" />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 md:col-span-2">
+                <DatePickerField label="Last Service" value={draft.lastService} onChange={(v) => set("lastService", v)} />
+                <DatePickerField label="Next Service" value={draft.nextService} onChange={(v) => set("nextService", v)} />
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
+
+        <DialogFooter className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-between">
+          <div className="flex gap-2">
+            <Button variant="destructive" onClick={() => onDelete?.(draft)} className="rounded-xl">
+              <X className="mr-2 h-4 w-4" /> Delete
+            </Button>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="secondary" onClick={() => onOpenChange(false)} className="rounded-xl">
+              Cancel
+            </Button>
+            <Button onClick={() => onSave?.(draft)} className="rounded-xl">
+              Save changes
+            </Button>
+          </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function CreateDialog({ open, onOpenChange, nextAccount, onCreate }) {
+  const blank = useMemo(
+    () => ({
+      account: nextAccount,
+      client: "",
+      address: "",
+      city: "Portland",
+      state: "OR",
+      zip: "",
+      phone: "",
+      email1: "",
+      email2: "",
+      callsForScheduling: false,
+      frequency: "Monthly",
+      serviceType: "",
+      rate: 85,
+      avgDurationHrs: 2,
+      preferredGardener: "",
+      preferredDay: "",
+      preferredTime: "",
+      notes: "",
+      lastService: "",
+      nextService: "",
+    }),
+    [nextAccount]
+  );
+
+  const [draft, setDraft] = useState(blank);
+
+  useEffect(() => {
+    if (open) setDraft(blank);
+  }, [open, blank]);
+
+  const set = (k, v) => setDraft((d) => ({ ...d, [k]: v }));
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl rounded-2xl">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Plus className="h-5 w-5" /> New customer
+          </DialogTitle>
+          <DialogDescription>Create a customer record. You can edit details later.</DialogDescription>
+        </DialogHeader>
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <Label>Client</Label>
+            <Input value={draft.client} onChange={(e) => set("client", e.target.value)} placeholder="Full name" />
+          </div>
+          <div className="space-y-2">
+            <Label>Account #</Label>
+            <Input value={draft.account} onChange={(e) => set("account", Number(e.target.value) || nextAccount)} />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Address</Label>
+            <Input value={draft.address} onChange={(e) => set("address", e.target.value)} placeholder="Street address" />
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="col-span-1 space-y-2">
+              <Label>City</Label>
+              <Input value={draft.city} onChange={(e) => set("city", e.target.value)} />
+            </div>
+            <div className="col-span-1 space-y-2">
+              <Label>State</Label>
+              <Input value={draft.state} onChange={(e) => set("state", e.target.value)} />
+            </div>
+            <div className="col-span-1 space-y-2">
+              <Label>Zip</Label>
+              <Input value={draft.zip} onChange={(e) => set("zip", e.target.value)} />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Email</Label>
+            <Input value={draft.email1} onChange={(e) => set("email1", e.target.value)} />
+          </div>
+          <div className="space-y-2">
+            <Label>Phone</Label>
+            <Input value={draft.phone} onChange={(e) => set("phone", e.target.value)} />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Frequency</Label>
+            <Select value={draft.frequency} onValueChange={(v) => set("frequency", v)}>
+              <SelectTrigger className="rounded-xl">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Monthly">Monthly</SelectItem>
                 <SelectItem value="2x/Year">2x/Year</SelectItem>
                 <SelectItem value="1x/Year">1x/Year</SelectItem>
                 <SelectItem value="As Needed">As Needed</SelectItem>
