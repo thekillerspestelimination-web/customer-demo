@@ -28,6 +28,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { loadCustomers, saveCustomers } from "@/lib/customers";
 import {
   Dialog,
   DialogContent,
@@ -1345,17 +1346,8 @@ export default function CustomerDatabaseUI() {
 
   const fileInputRef = useRef(null);
 
-  const [customers, setCustomers] = useState(() => {
-    try {
-      const raw = localStorage.getItem("customer_db_v1");
-      if (!raw) return seedCustomers;
-      const parsed = JSON.parse(raw);
-      if (!Array.isArray(parsed) || parsed.length === 0) return seedCustomers;
-      return parsed;
-    } catch {
-      return seedCustomers;
-    }
-  });
+const [customers, setCustomers] = useState(() => loadCustomers(seedCustomers));
+
 
   const [query, setQuery] = useState("");
   const [view, setView] = useState("grid");
@@ -1382,13 +1374,14 @@ export default function CustomerDatabaseUI() {
   const [callsOnly, setCallsOnly] = useState(false);
   const [hideNoEmail, setHideNoEmail] = useState(false);
 
-  useEffect(() => {
-    try {
-      localStorage.setItem("customer_db_v1", JSON.stringify(customers));
-    } catch {
-      // ignore
-    }
-  }, [customers]);
+useEffect(() => {
+  try {
+    saveCustomers(customers);
+  } catch {
+    // ignore
+  }
+}, [customers]);
+
 
   const uniqueCities = useMemo(() => {
     const s = new Set(customers.map((c) => c.city).filter(Boolean));
