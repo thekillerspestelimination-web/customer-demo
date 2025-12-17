@@ -1055,6 +1055,193 @@ function CustomerDialog({ open, onOpenChange, customer, onSave, onDelete }) {
                     <SelectValue placeholder="Select frequency" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="Monthly">Monthly</SelectItem>
+                    <SelectItem value="2x/Year">2x/Year</SelectItem>
+                    <SelectItem value="1x/Year">1x/Year</SelectItem>
+                    <SelectItem value="As Needed">As Needed</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Service Type</Label>
+                <Input
+                  value={draft.serviceType}
+                  onChange={(e) => set("serviceType", e.target.value)}
+                  placeholder="e.g., Winter Pruning"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label>Rate</Label>
+                  <Input value={draft.rate} onChange={(e) => set("rate", Number(e.target.value) || 0)} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Avg Duration (hrs)</Label>
+                  <Input value={draft.avgDurationHrs} onChange={(e) => set("avgDurationHrs", Number(e.target.value) || 0)} />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Preferred Gardener</Label>
+                <Input value={draft.preferredGardener} onChange={(e) => set("preferredGardener", e.target.value)} />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label>Preferred Day</Label>
+                  <Select value={draft.preferredDay ? draft.preferredDay : "__none__"} onValueChange={(v) => set("preferredDay", v === "__none__" ? "" : v)}>
+                    <SelectTrigger className="rounded-xl">
+                      <SelectValue placeholder="Select a day" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="__none__">None</SelectItem>
+                      {DAYS_OF_WEEK.map((d) => (
+                        <SelectItem key={d} value={d}>
+                          {d}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Preferred Time</Label>
+                  <Input value={draft.preferredTime} onChange={(e) => set("preferredTime", e.target.value)} placeholder="e.g., 10:00 AM" />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between rounded-xl border p-3">
+                <div>
+                  <div className="text-sm font-semibold">Client calls for scheduling</div>
+                  <div className="text-xs text-muted-foreground">If enabled, client expects to initiate scheduling.</div>
+                </div>
+                <Switch checked={!!draft.callsForScheduling} onCheckedChange={(v) => set("callsForScheduling", !!v)} />
+              </div>
+
+              <div className="space-y-2 md:col-span-2">
+                <Label>Notes</Label>
+                <Input value={draft.notes} onChange={(e) => set("notes", e.target.value)} placeholder="Add any property notes or preferences" />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 md:col-span-2">
+                <DatePickerField label="Last Service" value={draft.lastService} onChange={(v) => set("lastService", v)} />
+                <DatePickerField label="Next Service" value={draft.nextService} onChange={(v) => set("nextService", v)} />
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
+
+        <DialogFooter className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-between">
+          <div className="flex gap-2">
+            <Button variant="destructive" onClick={() => onDelete?.(draft)} className="rounded-xl">
+              <X className="mr-2 h-4 w-4" /> Delete
+            </Button>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="secondary" onClick={() => onOpenChange(false)} className="rounded-xl">
+              Cancel
+            </Button>
+            <Button onClick={() => onSave?.(draft)} className="rounded-xl">
+              Save changes
+            </Button>
+          </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function CreateDialog({ open, onOpenChange, nextAccount, onCreate }) {
+  const blank = useMemo(
+    () => ({
+      account: nextAccount,
+      client: "",
+      address: "",
+      city: "Portland",
+      state: "OR",
+      zip: "",
+      phone: "",
+      email1: "",
+      email2: "",
+      callsForScheduling: false,
+      frequency: "Monthly",
+      serviceType: "",
+      rate: 85,
+      avgDurationHrs: 2,
+      preferredGardener: "",
+      preferredDay: "",
+      preferredTime: "",
+      notes: "",
+      lastService: "",
+      nextService: "",
+    }),
+    [nextAccount]
+  );
+
+  const [draft, setDraft] = useState(blank);
+
+  useEffect(() => {
+    if (open) setDraft(blank);
+  }, [open, blank]);
+
+  const set = (k, v) => setDraft((d) => ({ ...d, [k]: v }));
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl rounded-2xl">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Plus className="h-5 w-5" /> New customer
+          </DialogTitle>
+          <DialogDescription>Create a customer record. You can edit details later.</DialogDescription>
+        </DialogHeader>
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <Label>Client</Label>
+            <Input value={draft.client} onChange={(e) => set("client", e.target.value)} placeholder="Full name" />
+          </div>
+          <div className="space-y-2">
+            <Label>Account #</Label>
+            <Input value={draft.account} onChange={(e) => set("account", Number(e.target.value) || nextAccount)} />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Address</Label>
+            <Input value={draft.address} onChange={(e) => set("address", e.target.value)} placeholder="Street address" />
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="col-span-1 space-y-2">
+              <Label>City</Label>
+              <Input value={draft.city} onChange={(e) => set("city", e.target.value)} />
+            </div>
+            <div className="col-span-1 space-y-2">
+              <Label>State</Label>
+              <Input value={draft.state} onChange={(e) => set("state", e.target.value)} />
+            </div>
+            <div className="col-span-1 space-y-2">
+              <Label>Zip</Label>
+              <Input value={draft.zip} onChange={(e) => set("zip", e.target.value)} />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Email</Label>
+            <Input value={draft.email1} onChange={(e) => set("email1", e.target.value)} />
+          </div>
+          <div className="space-y-2">
+            <Label>Phone</Label>
+            <Input value={draft.phone} onChange={(e) => set("phone", e.target.value)} />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Frequency</Label>
+            <Select value={draft.frequency} onValueChange={(v) => set("frequency", v)}>
+              <SelectTrigger className="rounded-xl">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+              <SelectContent>
                 <SelectItem value="Monthly">Monthly</SelectItem>
                 <SelectItem value="2x/Year">2x/Year</SelectItem>
                 <SelectItem value="1x/Year">1x/Year</SelectItem>
@@ -1062,7 +1249,6 @@ function CustomerDialog({ open, onOpenChange, customer, onSave, onDelete }) {
               </SelectContent>
             </Select>
           </div>
-
           <div className="space-y-2">
             <Label>Service Type</Label>
             <Input value={draft.serviceType} onChange={(e) => set("serviceType", e.target.value)} placeholder="e.g., Winter Pruning" />
@@ -1089,7 +1275,11 @@ function CustomerDialog({ open, onOpenChange, customer, onSave, onDelete }) {
         </div>
 
         <DialogFooter>
-          <Button variant="secondary" onClick={() => onOpenChange(false)} className="rounded-xl">
+          <Button
+            variant="secondary"
+            onClick={() => onOpenChange(false)}
+            className="rounded-xl"
+          >
             Cancel
           </Button>
           <Button
@@ -1115,18 +1305,7 @@ function DataTable({ rows, onOpen }) {
         <table className="min-w-[1100px] w-full text-sm">
           <thead className="sticky top-0 z-10 bg-background">
             <tr className="border-b">
-              {[
-                "Acct",
-                "Client",
-                "City",
-                "Zip",
-                "Frequency",
-                "Service",
-                "Rate",
-                "Hrs",
-                "Calls?",
-                "Email",
-              ].map((h) => (
+              {["Acct", "Client", "City", "Zip", "Frequency", "Service", "Rate", "Hrs", "Calls?", "Email"].map((h) => (
                 <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">
                   {h}
                 </th>
@@ -1208,6 +1387,7 @@ export default function CustomerDatabaseUI() {
   }, [customers]);
 
   useEffect(() => {
+    // Lightweight self-tests only in development (safe in production too, but noisy)
     if (process?.env?.NODE_ENV === "development") {
       runCsvSelfTests();
       runDateSelfTests();
@@ -1263,7 +1443,10 @@ export default function CustomerDatabaseUI() {
       }
 
       const replace = window.confirm(
-        `Imported ${cleaned.length} rows.\n\nOK = Replace all existing customers\nCancel = Append / merge into existing list`
+        `Imported ${cleaned.length} rows.
+
+OK = Replace all existing customers
+Cancel = Append / merge into existing list`
       );
 
       if (replace) {
@@ -1393,16 +1576,19 @@ export default function CustomerDatabaseUI() {
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-background to-muted/40">
       <div className="mx-auto max-w-7xl px-4 py-8">
+        {/* Header */}
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border bg-background px-3 py-1 text-xs text-muted-foreground shadow-sm">
-              <Building2 className="h-3.5 w-3.5" /> Customer database • Local-first demo
+              <Building2 className="h-3.5 w-3.5" />
+              Customer database • Local-first demo
             </div>
             <h1 className="mt-3 text-3xl font-semibold tracking-tight">Customer Database</h1>
             <p className="mt-1 text-sm text-muted-foreground">Search, segment, and manage your recurring service customers.</p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
+            {/* Hidden file input for CSV import */}
             <input
               ref={fileInputRef}
               type="file"
@@ -1451,7 +1637,11 @@ export default function CustomerDatabaseUI() {
                 <DropdownMenuItem
                   onClick={() => {
                     const csv = toCSV(customers);
-                    downloadText(`customers_backup_${new Date().toISOString().slice(0, 10)}.csv`, csv, "text/csv;charset=utf-8");
+                    downloadText(
+                      `customers_backup_${new Date().toISOString().slice(0, 10)}.csv`,
+                      csv,
+                      "text/csv;charset=utf-8"
+                    );
                   }}
                 >
                   Export backup CSV
@@ -1465,19 +1655,31 @@ export default function CustomerDatabaseUI() {
           </div>
         </div>
 
+        {/* Stats */}
         <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <StatPill icon={LayoutGrid} label="Customers" value={stats.total} sub={`${filtered.length} shown`} />
           <StatPill icon={Calendar} label="Monthly" value={stats.monthly} sub="Active monthly accounts" />
           <StatPill icon={Phone} label="Calls to schedule" value={stats.calls} sub="Client-initiated scheduling" />
-          <StatPill icon={DollarSign} label="Avg rate" value={`$${stats.avgRate.toFixed(0)}`} sub={`Avg duration ${stats.avgHrs.toFixed(1)} hrs`} />
+          <StatPill
+            icon={DollarSign}
+            label="Avg rate"
+            value={`$${stats.avgRate.toFixed(0)}`}
+            sub={`Avg duration ${stats.avgHrs.toFixed(1)} hrs`}
+          />
         </div>
 
+        {/* Controls */}
         <div className="mt-6 rounded-2xl border bg-background p-4 shadow-sm">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center">
               <div className="relative w-full sm:max-w-sm">
                 <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search name, address, email, zip…" className="rounded-xl pl-9" />
+                <Input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search name, address, email, zip…"
+                  className="rounded-xl pl-9"
+                />
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
@@ -1533,16 +1735,24 @@ export default function CustomerDatabaseUI() {
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2">
                   <Checkbox checked={callsOnly} onCheckedChange={(v) => setCallsOnly(!!v)} id="callsOnly" />
-                  <Label htmlFor="callsOnly" className="text-sm">Calls to schedule</Label>
+                  <Label htmlFor="callsOnly" className="text-sm">
+                    Calls to schedule
+                  </Label>
                 </div>
                 <div className="flex items-center gap-2">
                   <Checkbox checked={hideNoEmail} onCheckedChange={(v) => setHideNoEmail(!!v)} id="hideNoEmail" />
-                  <Label htmlFor="hideNoEmail" className="text-sm">Hide no-email</Label>
+                  <Label htmlFor="hideNoEmail" className="text-sm">
+                    Hide no-email
+                  </Label>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
-                <Button variant="secondary" onClick={() => setView((v) => (v === "grid" ? "table" : "grid"))} className="rounded-xl">
+                <Button
+                  variant="secondary"
+                  onClick={() => setView((v) => (v === "grid" ? "table" : "grid"))}
+                  className="rounded-xl"
+                >
                   {view === "grid" ? (
                     <>
                       <List className="mr-2 h-4 w-4" /> Table
@@ -1558,6 +1768,7 @@ export default function CustomerDatabaseUI() {
           </div>
         </div>
 
+        {/* Content */}
         <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-12">
           <div className="lg:col-span-8">
             {filtered.length === 0 ? (
@@ -1604,7 +1815,9 @@ export default function CustomerDatabaseUI() {
               <CardContent className="space-y-3">
                 <div className="rounded-2xl border p-4">
                   <div className="text-sm font-semibold">Route grouping (lightweight)</div>
-                  <div className="mt-1 text-sm text-muted-foreground">Use City and Zip filters to build same-day clusters.</div>
+                  <div className="mt-1 text-sm text-muted-foreground">
+                    Use City and Zip filters to build same-day clusters. Add preferred day/time fields per customer to enable a true crew-day heat map.
+                  </div>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <Badge variant="secondary">Local storage</Badge>
@@ -1617,10 +1830,21 @@ export default function CustomerDatabaseUI() {
           </div>
         </div>
 
-        <CustomerDialog open={openDetail} onOpenChange={setOpenDetail} customer={selected} onSave={saveCustomer} onDelete={deleteCustomer} />
+        {/* Detail Dialog */}
+        <CustomerDialog
+          open={openDetail}
+          onOpenChange={setOpenDetail}
+          customer={selected}
+          onSave={saveCustomer}
+          onDelete={deleteCustomer}
+        />
+
+        {/* Create Dialog */}
         <CreateDialog open={openCreate} onOpenChange={setOpenCreate} nextAccount={nextAccount} onCreate={createCustomer} />
 
-        <div className="mt-10 text-xs text-muted-foreground">Tip: Click any customer card/row to view details, scheduling actions, and edit fields.</div>
+        <div className="mt-10 text-xs text-muted-foreground">
+          Tip: Click any customer card/row to view details, scheduling actions, and edit fields.
+        </div>
       </div>
     </div>
   );
