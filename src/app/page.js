@@ -869,19 +869,8 @@ function Row({ label, value, icon: Icon }) {
   );
 }
 
-function CustomerDialog({ open, onOpenChange, customer, onSave, onDelete ) {
+function CustomerDialog({ open, onOpenChange, customer, onSave, onDelete }) {
   const [draft, setDraft] = useState(null);
-  const [saveNotice, setSaveNotice] = useState("");
-const [saveNoticeOpen, setSaveNoticeOpen] = useState(false);
-
-const showSaved = (c) => {
-  const who = (c?.client || "Customer").toString().trim() || "Customer";
-  setSaveNotice(`Saved changes for ${who}.`);
-  setSaveNoticeOpen(true);
-
-  window.clearTimeout(showSaved._t);
-  showSaved._t = window.setTimeout(() => setSaveNoticeOpen(false), 2500);
-};
 
   useEffect(() => {
     setDraft(customer ? { ...customer } : null);
@@ -892,7 +881,7 @@ const showSaved = (c) => {
   if (!draft) return null;
 
   return (
-    <Dialog open={openCreate} onOpenChange={setOpenCreate} nextAccount={nextAccount} on create={createCustomer}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl rounded-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -1153,17 +1142,9 @@ const showSaved = (c) => {
             <Button variant="secondary" onClick={() => onOpenChange(false)} className="rounded-xl">
               Cancel
             </Button>
-            <Button
-  onClick={() => {
-    onSave?.(draft);
-    onOpenChange(false);     // closes the modal
-    onSaved?.(draft);        // triggers the “saved” message
-  }}
-  className="rounded-xl"
->
-  Save changes
-</Button>
-
+            <Button onClick={() => onSave?.(draft)} className="rounded-xl">
+              Save changes
+            </Button>
           </div>
         </DialogFooter>
       </DialogContent>
@@ -1199,19 +1180,6 @@ function CreateDialog({ open, onOpenChange, nextAccount, onCreate }) {
   );
 
   const [draft, setDraft] = useState(blank);
-  // Save acknowledgement (toast)
-const [saveNotice, setSaveNotice] = useState("");
-const [saveNoticeOpen, setSaveNoticeOpen] = useState(false);
-
-const showSaved = (c) => {
-  const who = (c?.client || "Customer").toString().trim() || "Customer";
-  setSaveNotice(`Saved changes for ${who}.`);
-  setSaveNoticeOpen(true);
-
-  // Auto-dismiss after ~2.5 seconds
-  window.clearTimeout(showSaved._t);
-  showSaved._t = window.setTimeout(() => setSaveNoticeOpen(false), 2500);
-};
 
   useEffect(() => {
     if (open) setDraft(blank);
@@ -1220,12 +1188,7 @@ const showSaved = (c) => {
   const set = (k, v) => setDraft((d) => ({ ...d, [k]: v }));
 
   return (
-    <Dialog open={openDetail}
-  onOpenChange={setOpenDetail}
-  customer={selected}
-  onSave={saveCustomer}
-  onDelete={deleteCustomer}
-  onSaved={showSaved}/>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl rounded-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -1281,25 +1244,3 @@ const showSaved = (c) => {
               <SelectContent>
                 <SelectItem value="Monthly">Monthly</SelectItem>
                 
-{/* Save notice */} 
-<div
-  className={cx(
-    "fixed bottom-4 left-1/2 z-50 w-[92vw] max-w-md -translate-x-1/2 transition-all",
-    saveNoticeOpen ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0 pointer-events-none"
-  )}
-  aria-live="polite"
->
-  <div className="rounded-2xl border bg-background/95 p-3 shadow-lg backdrop-blur">
-    <div className="flex items-center justify-between gap-3">
-      <div className="text-sm font-medium">{saveNotice}</div>
-      <Button
-        type="button"
-        variant="ghost"
-        className="h-8 rounded-xl"
-        onClick={() => setSaveNoticeOpen(false)}
-      >
-        Dismiss
-      </Button>
-    </div>
-  </div>
-</div>
