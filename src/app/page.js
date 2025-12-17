@@ -1567,7 +1567,7 @@ Cancel = Append / merge into existing list`
             <div className="inline-flex items-center gap-2 rounded-full border bg-background px-3 py-1 text-xs text-muted-foreground shadow-sm">
               <Building2 className="h-3.5 w-3.5" /> Customer database • Local-first demo
             </div>
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight">Customer Database</h1>
+            <h1 className="mt-3 text-3xl font-semibold tracking-tight">Wooden Gardener</h1>
             <p className="mt-1 text-sm text-muted-foreground">Search, segment, and manage your recurring service customers.</p>
           </div>
 
