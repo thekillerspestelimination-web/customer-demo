@@ -471,44 +471,90 @@ function parseYesNo(v) {
 }
 
 function mapCSVRowToCustomer(headers, row, fallbackAccount) {
-  const accountRaw = getCell(headers, row, [
-    "account #",
-    "account",
-    "acct",
-    "acct #",
-    "account number",
-  ]);
-  const account = safeNum(accountRaw, fallbackAccount);
+  // Robust CSV column mapping (case/space/punctuation-insensitive)
+  const norm = (s) =>
+    (s ?? "")
+      .toString()
+      .trim()
+      .toLowerCase()
+      .replace(/\uFEFF/g, "") // BOM
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim();
 
-  const client = getCell(headers, row, ["client", "customer", "name", "client name"]);
-  const address = getCell(headers, row, ["address", "street", "street address"]);
-  const city = getCell(headers, row, ["city"]);
-  const state = getCell(headers, row, ["state", "st"]);
-  const zip = getCell(headers, row, ["zip", "zip code", "zipcode", "postal", "postal code"]);
-  const phone = getCell(headers, row, ["phone", "phone number", "telephone"]);
-  const email1 = getCell(headers, row, ["email", "email 1", "email #1"]);
-  const email2 = getCell(headers, row, ["email #2", "email 2", "secondary email"]);
-  const calls = getCell(headers, row, [
-    "client calls for scheduling",
-    "calls for scheduling",
-    "calls to schedule",
-  ]);
-  const frequency = getCell(headers, row, ["frequency"]);
-  const serviceType = getCell(headers, row, ["service type", "service"]);
-  const rate = getCell(headers, row, ["rate", "price"]);
-  const hrs = getCell(headers, row, [
-    "average duration (hrs)",
-    "avg duration (hrs)",
-    "avg duration",
-    "hours",
-    "hrs",
-  ]);
-  const preferredGardener = getCell(headers, row, ["preferred gardener", "gardener"]);
-  const preferredDay = getCell(headers, row, ["preferred day", "day"]);
-  const preferredTime = getCell(headers, row, ["preferred time", "time"]);
-  const notes = getCell(headers, row, ["notes", "note"]);
-  const lastService = getCell(headers, row, ["last service", "last"]);
-  const nextService = getCell(headers, row, ["next service", "next"]);
+  const headerIndex = new Map(headers.map((h, i) => [norm(h), i]));
+
+  const get = (aliases, fallback = "") => {
+    for (const a of aliases) {
+      const idx = headerIndex.get(norm(a));
+      if (idx !== undefined) return row[idx] ?? fallback;
+    }
+    // If we didn't find an exact alias match, try a contains match (helps with slight header variants)
+    const wanted = aliases.map((a) => norm(a));
+    for (const [h, idx] of headerIndex.entries()) {
+      if (wanted.some((w) => h.includes(w))) return row[idx] ?? fallback;
+    }
+    return fallback;
+  };
+
+  const asNum = (v, fb = 0) => {
+    const s = (v ?? "").toString().trim();
+    if (!s) return fb;
+    const x = Number(s.replace(/[^0-9.\-]/g, ""));
+    return Number.isFinite(x) ? x : fb;
+  };
+
+  const asYesNo = (v) => {
+    const s = (v ?? "").toString().trim().toLowerCase();
+    if (["yes", "y", "true", "1"].includes(s)) return true;
+    if (["no", "n", "false", "0"].includes(s)) return false;
+    return false;
+  };
+
+  // Account
+  const acctRaw = get(["Account #", "Account", "Acct", "Account Number", "Account No"]).toString().trim();
+  const account = acctRaw ? asNum(acctRaw, fallbackAccount) : fallbackAccount;
+
+  // Core fields
+  const client = get(["Client", "Customer", "Name", "Client Name"]).toString().trim();
+  const address = get(["Address", "Street", "Street Address"]).toString().trim();
+  const city = get(["City"]).toString().trim();
+  const state = get(["State", "ST"]).toString().trim();
+  const zip = get(["Zip Code", "Zip", "Postal", "Postal Code"]).toString().trim();
+  const phone = get(["Phone", "Phone #", "Telephone"]).toString().trim();
+  const email1 = get(["Email", "Email 1", "Primary Email"]).toString().trim();
+  const email2 = get(["Email #2", "Email 2", "Secondary Email"]).toString().trim();
+
+  // Scheduling + services
+  const callsForScheduling = asYesNo(
+    get(["Client Calls For Scheduling", "Calls For Scheduling", "Calls to Schedule", "Client Calls"]) 
+  );
+  const frequency = get(["Frequency", "Service Frequency"]).toString().trim();
+  const serviceType = get(["Service Type", "Service", "Work Type"]).toString().trim();
+  const rate = asNum(get(["Rate", "Price", "Hourly Rate", "Service Rate"]), 0);
+
+  // **Avg hours** mapping (this is what you reported)
+  const avgDurationHrs = asNum(
+    get([
+      "Average Duration (hrs)",
+      "Average Duration", 
+      "Avg Duration (hrs)",
+      "Avg Duration",
+      "Average Hours",
+      "Avg Hours",
+      "Avg. Hours",
+      "Hours",
+      "Hrs",
+    ]),
+    0
+  );
+
+  const preferredGardener = get(["Preferred Gardener", "Preferred Tech", "Preferred Technician"]).toString().trim();
+  const preferredDay = get(["Preferred Day", "Day Preference"]).toString().trim();
+  const preferredTime = get(["Preferred Time", "Time Preference"]).toString().trim();
+
+  const notes = get(["Notes", "Note"]).toString().trim();
+  const lastService = get(["Last Service", "Last Service Date"]).toString().trim();
+  const nextService = get(["Next Service", "Next Service Date"]).toString().trim();
 
   return {
     account,
@@ -520,11 +566,11 @@ function mapCSVRowToCustomer(headers, row, fallbackAccount) {
     phone,
     email1,
     email2,
-    callsForScheduling: parseYesNo(calls),
+    callsForScheduling,
     frequency,
     serviceType,
-    rate: safeNum(rate, 0),
-    avgDurationHrs: safeNum(hrs, 0),
+    rate,
+    avgDurationHrs,
     preferredGardener,
     preferredDay,
     preferredTime,
