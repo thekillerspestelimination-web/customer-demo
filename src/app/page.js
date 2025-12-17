@@ -1095,61 +1095,41 @@ function CustomerDialog({ open, onOpenChange, customer, onSave, onDelete, onSave
           </div>
         </div>
 
+        </Tabs>
+
         <DialogFooter>
-          <Button variant="secondary" onClick={() => onOpenChange(false)} className="rounded-xl">
-            Cancel
-          </Button>
-          <Button
-            onClick={() => {
-              if (!draft.client.trim()) return;
-              onCreate?.(draft);
-              onOpenChange(false);
-            }}
-            className="rounded-xl"
-          >
-            Create
-          </Button>
-          </TabsContent>
-          <DialogFooter>
-  <div className="flex w-full flex-col-reverse gap-2 sm:flex-row sm:justify-between">
-    <Button
-      type="button"
-      variant="destructive"
-      className="rounded-xl"
-      onClick={() => {
-        const ok = window.confirm(`Delete ${draft.client}? This cannot be undone.`);
-        if (!ok) return;
-        onDelete?.(draft);
-        onOpenChange(false);
-      }}
-    >
-      Delete
-    </Button>
+          <div className="flex w-full flex-col-reverse gap-2 sm:flex-row sm:justify-between">
+            <Button
+              type="button"
+              variant="destructive"
+              className="rounded-xl"
+              onClick={() => {
+                const ok = window.confirm(`Delete ${draft.client}? This cannot be undone.`);
+                if (!ok) return;
+                onDelete?.(draft);
+                onOpenChange(false);
+              }}
+            >
+              Delete
+            </Button>
 
-    <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-      <Button
-        type="button"
-        variant="secondary"
-        onClick={() => onOpenChange(false)}
-        className="rounded-xl"
-      >
-        Close
-      </Button>
-
-      <Button
-        type="button"
-        className="rounded-xl"
-        onClick={() => {
-          onSave?.(draft);       // persist edits
-          onOpenChange(false);   // close dialog
-          onSaved?.(draft);      // show “Saved…” toast
-        }}
-      >
-        Save changes
-      </Button>
-    </div>
-  </div>
-
+            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+              <Button type="button" variant="secondary" onClick={() => onOpenChange(false)} className="rounded-xl">
+                Close
+              </Button>
+              <Button
+                type="button"
+                className="rounded-xl"
+                onClick={() => {
+                  onSave?.(draft);
+                  onOpenChange(false);
+                  onSaved?.(draft);
+                }}
+              >
+                Save changes
+              </Button>
+            </div>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
