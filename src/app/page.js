@@ -1136,6 +1136,149 @@ function CustomerDialog({ open, onOpenChange, customer, onSave, onDelete, onSave
     </Dialog>
   );
 }
+function CreateDialog({ open, onOpenChange, nextAccount, onCreate }) {
+  const empty = useMemo(
+    () => ({
+      account: nextAccount,
+      client: "",
+      address: "",
+      city: "",
+      state: "OR",
+      zip: "",
+      phone: "",
+      email1: "",
+      email2: "",
+      callsForScheduling: false,
+      frequency: "Monthly",
+      serviceType: "",
+      rate: 0,
+      avgDurationHrs: 0,
+      preferredGardener: "",
+      preferredDay: "",
+      preferredTime: "",
+    }),
+    [nextAccount]
+  );
+
+  const [draft, setDraft] = useState(empty);
+
+  useEffect(() => setDraft(empty), [empty]);
+
+  const set = (k, v) => setDraft((d) => ({ ...d, [k]: v }));
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-xl">
+        <DialogHeader>
+          <DialogTitle>New customer</DialogTitle>
+          <DialogDescription>Create a new customer record.</DialogDescription>
+        </DialogHeader>
+
+        <div className="grid gap-3 md:grid-cols-2">
+          <div className="space-y-2">
+            <Label>Account #</Label>
+            <Input value={draft.account} disabled />
+          </div>
+
+          <div className="space-y-2 md:col-span-2">
+            <Label>Client</Label>
+            <Input value={draft.client} onChange={(e) => set("client", e.target.value)} />
+          </div>
+
+          <div className="space-y-2 md:col-span-2">
+            <Label>Address</Label>
+            <Input value={draft.address} onChange={(e) => set("address", e.target.value)} />
+          </div>
+
+          <div className="space-y-2">
+            <Label>City</Label>
+            <Input value={draft.city} onChange={(e) => set("city", e.target.value)} />
+          </div>
+
+          <div className="space-y-2">
+            <Label>State</Label>
+            <Input value={draft.state} onChange={(e) => set("state", e.target.value)} />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Zip Code</Label>
+            <Input value={draft.zip} onChange={(e) => set("zip", e.target.value)} />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Phone</Label>
+            <Input value={draft.phone} onChange={(e) => set("phone", e.target.value)} />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Email</Label>
+            <Input value={draft.email1} onChange={(e) => set("email1", e.target.value)} />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Email #2</Label>
+            <Input value={draft.email2} onChange={(e) => set("email2", e.target.value)} />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Frequency</Label>
+            <Select value={draft.frequency} onValueChange={(v) => set("frequency", v)}>
+              <SelectTrigger className="rounded-xl">
+                <SelectValue placeholder="Frequency" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Monthly">Monthly</SelectItem>
+                <SelectItem value="2x/Year">2x/Year</SelectItem>
+                <SelectItem value="1x/Year">1x/Year</SelectItem>
+                <SelectItem value="As Needed">As Needed</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Service Type</Label>
+            <Input value={draft.serviceType} onChange={(e) => set("serviceType", e.target.value)} />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 md:col-span-2">
+            <div className="space-y-2">
+              <Label>Rate</Label>
+              <Input value={draft.rate} onChange={(e) => set("rate", Number(e.target.value) || 0)} />
+            </div>
+            <div className="space-y-2">
+              <Label>Avg Duration (hrs)</Label>
+              <Input value={draft.avgDurationHrs} onChange={(e) => set("avgDurationHrs", Number(e.target.value) || 0)} />
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between rounded-xl border p-3 md:col-span-2">
+            <div>
+              <div className="text-sm font-semibold">Client calls for scheduling</div>
+              <div className="text-xs text-muted-foreground">Record who initiates scheduling.</div>
+            </div>
+            <Switch checked={!!draft.callsForScheduling} onCheckedChange={(v) => set("callsForScheduling", !!v)} />
+          </div>
+        </div>
+
+        <DialogFooter>
+          <Button variant="secondary" onClick={() => onOpenChange(false)} className="rounded-xl">
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              if (!draft.client.trim()) return;
+              onCreate?.(draft);
+              onOpenChange(false);
+            }}
+            className="rounded-xl"
+          >
+            Create
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 function DataTable({ rows, onOpen }) {
   return (
