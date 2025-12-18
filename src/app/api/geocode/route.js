@@ -1,4 +1,6 @@
 export async function POST(req) {
+  console.log("GOOGLE_MAPS_SERVER_KEY exists:", !!process.env.GOOGLE_MAPS_SERVER_KEY);
+
   const { addresses } = await req.json();
 
   const key = process.env.GOOGLE_MAPS_SERVER_KEY;
